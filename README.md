@@ -13,8 +13,8 @@
   <a href="https://tordlabs.com">Website</a> •
   <a href="https://tordlabs.com/whitepaper">Whitepaper</a> •
   <a href="https://tordlabs.com/dashboard">Launch App</a> •
-  <a href="https://t.me/tabordefi">Telegram</a> •
-  <a href="https://x.com/Tabordefi">Twitter</a>
+  <a href="https://t.me/TordLabs">Telegram</a> •
+  <a href="https://x.com/tordlabs">Twitter</a>
 </p>
 
 ---
@@ -106,8 +106,8 @@ Security is our top priority:
 
 Join our growing community:
 
-- **Telegram**: [t.me/tabordefi](https://t.me/tabordefi)
-- **Twitter/X**: [@Tabordefi](https://x.com/Tabordefi)
+- **Telegram**: [t.me/TordLabs](https://t.me/TordLabs)
+- **Twitter/X**: [@tordlabs](https://x.com/tordlabs)
 - **Website**: [tordlabs.com](https://tordlabs.com)
 
 ## Launch
