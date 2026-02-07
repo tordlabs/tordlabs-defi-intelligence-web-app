@@ -58,17 +58,6 @@ Our mission is to democratize access to advanced financial tools that were previ
 | **Network** | Binance Smart Chain (BEP-20) |
 | **Total Supply** | 1,000,000,000 TORD |
 
-### Token Distribution
-
-| Allocation | Percentage |
-|-----------|------------|
-| Public Sale | 30% |
-| Ecosystem & Development | 25% |
-| Liquidity Pool | 20% |
-| Team & Advisors | 10% |
-| Marketing | 10% |
-| Reserve | 5% |
-
 ## Roadmap
 
 ### Phase 1 — Foundation
