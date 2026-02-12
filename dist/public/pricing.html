@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing | TORD AI</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#161616;--bg4:#1a1a1a;
+      --border:#1e1e1e;--border-gold:rgba(245,166,35,0.3);
+      --text:#fff;--text2:#a0a0a0;--text3:#666;
+      --gold:#f5a623;--gold-dim:rgba(245,166,35,0.1);
+      --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#a855f7;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+    .topbar{display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100}
+    .topbar img{width:36px;height:36px}
+    .topbar h2{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;background:linear-gradient(135deg,var(--gold),#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .topbar .back-btn{margin-left:auto;display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--text2);padding:8px 16px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:13px;transition:all .2s}
+    .topbar .back-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+    .pricing-container{max-width:1200px;margin:0 auto;padding:40px 24px 80px}
+
+    .pricing-header{text-align:center;margin-bottom:40px}
+    .pricing-header h1{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:700;margin-bottom:12px;background:linear-gradient(135deg,var(--gold),#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pricing-header p{color:var(--text2);font-size:15px;max-width:600px;margin:0 auto}
+
+    .payg-note{text-align:center;margin-bottom:32px}
+    .payg-note .badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border-gold);padding:10px 20px;border-radius:12px;font-size:13px;color:var(--gold)}
+    .payg-note .badge svg{flex-shrink:0}
+
+    .toggle-wrap{display:flex;justify-content:center;margin-bottom:48px}
+    .toggle-bar{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:40px;padding:4px;gap:0}
+    .toggle-btn{padding:10px 28px;border-radius:36px;border:none;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;background:none;color:var(--text3)}
+    .toggle-btn.active{background:var(--gold);color:#000}
+    .annual-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;margin-left:8px}
+
+    .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:72px}
+
+    .plan-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;position:relative;transition:border-color .3s,transform .3s}
+    .plan-card:hover{border-color:rgba(255,255,255,0.1);transform:translateY(-4px)}
+    .plan-card.popular{border-color:var(--blue);box-shadow:0 0 30px rgba(59,130,246,0.1)}
+    .plan-card.popular::before{content:'Most Popular';position:absolute;top:-12px;right:20px;background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:6px}
+
+    .plan-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;margin-bottom:4px}
+    .plan-desc{color:var(--text3);font-size:13px;margin-bottom:20px}
+
+    .plan-price{margin-bottom:6px}
+    .plan-price .amount{font-size:40px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+    .plan-price .period{font-size:14px;color:var(--text3)}
+
+    .plan-balance{margin-bottom:16px}
+    .plan-balance span{display:inline-flex;align-items:center;gap:5px;background:rgba(245,166,35,0.1);border:1px solid var(--border-gold);color:var(--gold);font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px}
+    .plan-balance span svg{flex-shrink:0}
+
+    .plan-annual-info{display:none;margin-bottom:12px;font-size:12px;color:var(--text3)}
+    .plan-annual-info .original{text-decoration:line-through;margin-right:6px}
+    .plan-annual-info .discounted{color:var(--green);font-weight:600;margin-right:6px}
+    .plan-annual-info .save-badge{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px}
+
+    .plan-credits-badge{display:none;margin-bottom:16px}
+    .plan-credits-badge span{background:rgba(245,166,35,0.12);border:1px solid var(--border-gold);color:var(--gold);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px}
+
+    .plan-usage{margin-bottom:16px;padding:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px}
+    .plan-usage-title{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+    .plan-usage-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text2);padding:3px 0}
+    .plan-usage-row .val{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px}
+
+    .plan-features{list-style:none;flex:1;margin-bottom:28px}
+    .plan-features li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13px;color:var(--text2)}
+    .plan-features li svg{flex-shrink:0;margin-top:2px}
+    .plan-features li.highlight{color:var(--gold);font-weight:600}
+    .plan-features li.disabled{color:var(--text3)}
+    .plan-features li.disabled svg path{stroke:var(--red)}
+
+    .plan-btn{width:100%;padding:14px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;border:none;display:flex;align-items:center;justify-content:center;gap:8px}
+    .plan-btn.default{background:var(--bg4);border:1px solid var(--border);color:var(--text2)}
+    .plan-btn.default:hover{border-color:var(--text3);color:var(--text)}
+    .plan-btn.primary{background:var(--blue);color:#fff}
+    .plan-btn.primary:hover{background:#2563eb;box-shadow:0 4px 20px rgba(59,130,246,0.3)}
+
+    .section-divider{text-align:center;margin-bottom:48px}
+    .section-divider h2{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:700;margin-bottom:12px}
+    .section-divider .badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:8px 16px;border-radius:20px;font-size:13px;color:var(--text2)}
+    .section-divider .badge svg{flex-shrink:0}
+
+    .packs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+    .pack-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;position:relative;transition:border-color .3s,transform .3s}
+    .pack-card:hover{border-color:rgba(255,255,255,0.1);transform:translateY(-4px)}
+    .pack-card.popular{border-color:var(--blue);box-shadow:0 0 30px rgba(59,130,246,0.1)}
+    .pack-card.popular::before{content:'Most Popular';position:absolute;top:-12px;right:20px;background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:6px}
+
+    .or-divider{display:flex;align-items:center;gap:16px;margin:48px 0;color:var(--text3);font-size:13px}
+    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    .free-tier{text-align:center;padding:32px;background:var(--bg3);border:1px solid var(--border-gold);border-radius:16px;margin-top:48px}
+    .free-tier h3{font-family:'Orbitron',sans-serif;font-size:18px;color:var(--gold);margin-bottom:8px}
+    .free-tier p{color:var(--text2);font-size:14px;margin-bottom:16px;max-width:500px;margin-left:auto;margin-right:auto}
+    .free-tier .free-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold);padding:12px 28px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none}
+    .free-tier .free-btn:hover{background:rgba(245,166,35,0.2);border-color:var(--gold)}
+
+    .cost-info{text-align:center;margin-top:40px;padding:20px;background:var(--bg3);border:1px solid var(--border);border-radius:12px}
+    .cost-info-title{font-size:13px;color:var(--text2);margin-bottom:12px}
+    .cost-info-grid{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+    .cost-info-item{text-align:center}
+    .cost-info-item .label{font-size:11px;color:var(--text3);margin-bottom:4px}
+    .cost-info-item .value{font-size:14px;color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
+
+    @media(max-width:900px){
+      .plans-grid,.packs-grid{grid-template-columns:1fr}
+      .plan-card.popular,.pack-card.popular{order:-1}
+      .pricing-header h1{font-size:24px}
+    }
+    @media(max-width:600px){
+      .pricing-container{padding:24px 16px 60px}
+      .toggle-btn{padding:8px 18px;font-size:13px}
+    }
+    .wallet-btn{display:flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold);padding:8px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;transition:all .2s}
+    .wallet-btn:hover{background:rgba(245,166,35,0.2);border-color:var(--gold)}
+    .wallet-btn.connected{padding:8px 16px;background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:#22c55e}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <img src="/logo.png" alt="TORD" />
+    <h2>TORD AI</h2>
+    <button class="wallet-btn" id="walletBtn" onclick="connectWallet()" title="Connect Wallet">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 100 4 2 2 0 000-4z"/></svg>
+      <span id="walletBtnText"></span>
+    </button>
+    <button class="back-btn" onclick="window.location.href='/tordai'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Back to TORD AI
+    </button>
+  </div>
+
+  <div class="pricing-container">
+    <div class="pricing-header">
+      <h1>Choose Your Plan</h1>
+      <p>Pay-as-you-go pricing. Get premium balance to use across all AI models. Only pay for what you use.</p>
+    </div>
+
+    <div class="payg-note">
+      <div class="badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Pay-as-you-go &bull; Premium balance consumed per usage &bull; No hidden fees
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-bar">
+        <button class="toggle-btn active" id="monthlyBtn" onclick="toggleBilling('monthly')">Monthly</button>
+        <button class="toggle-btn" id="annualBtn" onclick="toggleBilling('annual')">Annually <span class="annual-badge">Save 50%</span></button>
+      </div>
+    </div>
+
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-name"><img src="/badges/basic.png" alt="Bronze" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Basic</div>
+        <div class="plan-desc">Ideal for hobbyists and beginners</div>
+        <div class="plan-price">
+          <span class="amount" id="basicPrice">$9.90</span><span class="period">/month</span>
+        </div>
+        <div class="plan-annual-info" id="basicAnnual">
+          <span class="original">$118.80</span>
+          <span class="discounted">$59.40/year</span>
+          <span class="save-badge">Save 50%</span>
+        </div>
+        <div class="plan-credits-badge" id="basicCredits"><span>$118.80 total balance/year</span></div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $9.90 premium balance/month</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Image Generation</span><span class="val">~200 images</span></div>
+          <div class="plan-usage-row"><span>AI Chat Messages</span><span class="val">~2,600 chats</span></div>
+          <div class="plan-usage-row"><span>AI Reasoning</span><span class="val">~1,000 queries</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> DeepSeek Chat &amp; Reasoning</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Image generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Standard generation speed</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> No watermark</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Private generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Customer support</li>
+          <li class="disabled"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg> Commercial Use License</li>
+        </ul>
+        <button class="plan-btn default" onclick="handleSubscribe('basic')">Subscribe</button>
+      </div>
+
+      <div class="plan-card popular">
+        <div class="plan-name"><img src="/badges/standard.png" alt="Silver" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Standard</div>
+        <div class="plan-desc">Perfect for most creators</div>
+        <div class="plan-price">
+          <span class="amount" id="standardPrice">$19.90</span><span class="period">/month</span>
+        </div>
+        <div class="plan-annual-info" id="standardAnnual">
+          <span class="original">$238.80</span>
+          <span class="discounted">$119.40/year</span>
+          <span class="save-badge">Save 50%</span>
+        </div>
+        <div class="plan-credits-badge" id="standardCredits"><span>$238.80 total balance/year</span></div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $19.90 premium balance/month</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Image Generation</span><span class="val">~410 images</span></div>
+          <div class="plan-usage-row"><span>AI Chat Messages</span><span class="val">~5,300 chats</span></div>
+          <div class="plan-usage-row"><span>AI Reasoning</span><span class="val">~2,000 queries</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> DeepSeek Chat &amp; Reasoning</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Image generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Priority generation speed</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> No watermark</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Private generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Priority customer support</li>
+          <li class="highlight"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Commercial Use License</li>
+        </ul>
+        <button class="plan-btn primary" onclick="handleSubscribe('standard')">Subscribe <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></button>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name"><img src="/badges/pro.png" alt="Gold" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Pro</div>
+        <div class="plan-desc">Ideal for power users</div>
+        <div class="plan-price">
+          <span class="amount" id="proPrice">$49.90</span><span class="period">/month</span>
+        </div>
+        <div class="plan-annual-info" id="proAnnual">
+          <span class="original">$598.80</span>
+          <span class="discounted">$299.40/year</span>
+          <span class="save-badge">Save 50%</span>
+        </div>
+        <div class="plan-credits-badge" id="proCredits"><span>$598.80 total balance/year</span></div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $49.90 premium balance/month</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Image Generation</span><span class="val">~1,025 images</span></div>
+          <div class="plan-usage-row"><span>AI Chat Messages</span><span class="val">~13,300 chats</span></div>
+          <div class="plan-usage-row"><span>AI Reasoning</span><span class="val">~5,000 queries</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> DeepSeek Chat &amp; Reasoning</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Image generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Fastest generation speed</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> No watermark</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Private generation</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Expert team support</li>
+          <li class="highlight"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Commercial Use License</li>
+        </ul>
+        <button class="plan-btn default" onclick="handleSubscribe('pro')">Subscribe</button>
+      </div>
+    </div>
+
+    <div class="section-divider">
+      <h2>Credit Packs</h2>
+      <div class="badge" style="margin-top:12px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        One-time purchase &bull; Premium balance never expires
+      </div>
+    </div>
+
+    <div class="packs-grid" style="margin-top:32px">
+      <div class="pack-card">
+        <div class="plan-name"><img src="https://cdn-icons-png.flaticon.com/128/3068/3068326.png" alt="Starter" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Starter Pack</div>
+        <div class="plan-desc">Great for occasional use</div>
+        <div class="plan-price" style="margin-bottom:8px">
+          <span class="amount">$9.90</span>
+        </div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $9.90 premium balance</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Images</span><span class="val">~200</span></div>
+          <div class="plan-usage-row"><span>AI Chats</span><span class="val">~2,600</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Includes all features</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Credits never expire</li>
+        </ul>
+        <button class="plan-btn default" onclick="handlePack('starter')">One-Time Payment</button>
+      </div>
+
+      <div class="pack-card popular">
+        <div class="plan-name"><img src="/badges/creator.png" alt="Creator" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Creator Pack</div>
+        <div class="plan-desc">Perfect for most creators</div>
+        <div class="plan-price" style="margin-bottom:8px">
+          <span class="amount">$24.90</span>
+        </div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $24.90 premium balance</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Images</span><span class="val">~510</span></div>
+          <div class="plan-usage-row"><span>AI Chats</span><span class="val">~6,600</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Includes all features</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Credits never expire</li>
+        </ul>
+        <button class="plan-btn primary" onclick="handlePack('creator')">One-Time Payment <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></button>
+      </div>
+
+      <div class="pack-card">
+        <div class="plan-name"><img src="https://cdn-icons-png.flaticon.com/128/3068/3068349.png" alt="Professional" style="width:28px;height:28px;vertical-align:middle;margin-right:8px">Professional Pack</div>
+        <div class="plan-desc">Ideal for power users</div>
+        <div class="plan-price" style="margin-bottom:8px">
+          <span class="amount">$49.90</span>
+        </div>
+        <div class="plan-balance"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> $49.90 premium balance</span></div>
+        <div class="plan-usage">
+          <div class="plan-usage-title">Estimated Usage</div>
+          <div class="plan-usage-row"><span>AI Images</span><span class="val">~1,025</span></div>
+          <div class="plan-usage-row"><span>AI Chats</span><span class="val">~13,300</span></div>
+        </div>
+        <ul class="plan-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> All AI models access</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Includes all features</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> Credits never expire</li>
+        </ul>
+        <button class="plan-btn default" onclick="handlePack('professional')">One-Time Payment</button>
+      </div>
+    </div>
+
+    <div class="or-divider">or</div>
+
+    <div class="free-tier">
+      <h3>Free Access via Token Holdings</h3>
+      <p>Hold $TORD or USDT in your BSC wallet to earn free premium balance. $50 worth = $1 premium credit, resets every 24h.</p>
+      <a href="/tordai" class="free-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M9 12l2 2 4-4"/></svg>
+        Connect Wallet &amp; Start Free
+      </a>
+    </div>
+
+    <div class="cost-info">
+      <div class="cost-info-title">Approximate cost per action (deducted from your premium balance)</div>
+      <div class="cost-info-grid">
+        <div class="cost-info-item">
+          <div class="label">Image Generation</div>
+          <div class="value">~$0.05</div>
+        </div>
+        <div class="cost-info-item">
+          <div class="label">AI Chat Message</div>
+          <div class="value">~$0.004</div>
+        </div>
+        <div class="cost-info-item">
+          <div class="label">AI Reasoning</div>
+          <div class="value">~$0.01</div>
+        </div>
+        <div class="cost-info-item">
+          <div class="label">Code Analysis</div>
+          <div class="value">~$0.006</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closePayment()">&times;</button>
+      <h2 id="modalTitle">Complete Payment</h2>
+
+      <div id="paymentOptions">
+        <div class="amount-display">Amount: <strong id="paymentAmount">$0.00</strong> USDT</div>
+        <div class="network-badge">Network: BSC (BEP20)</div>
+
+        <div class="pay-option-section" id="walletPaySection">
+          <div class="pay-option-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            Pay with Connected Wallet
+          </div>
+          <p class="pay-option-desc">Send USDT directly from your connected wallet. Transaction is automatic.</p>
+          <div id="walletPayStatus" class="wallet-pay-status"></div>
+          <button class="submit-btn wallet-pay-btn" id="walletPayBtn" onclick="payWithWallet()">
+            <span id="walletPayText">Pay with Wallet</span>
+            <span id="walletPaySpinner" class="spinner" style="display:none"></span>
+          </button>
+        </div>
+
+        <div class="pay-divider"><span>or pay manually</span></div>
+
+        <div class="pay-option-section manual-section">
+          <div class="pay-option-header" onclick="toggleManual()" style="cursor:pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01"/><path d="M10 8h8"/><path d="M6 12h.01"/><path d="M10 12h8"/><path d="M6 16h.01"/><path d="M10 16h8"/></svg>
+            Manual Payment
+            <svg class="manual-chevron" id="manualChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div id="manualForm" class="manual-form" style="display:none">
+            <div class="step-label">Step 1: Send USDT (BEP20) to this wallet</div>
+            <div class="wallet-display">
+              <code id="paymentWallet">0x99DF34AefE68BC1d891729ad39CFa2Bd56E41e6B</code>
+              <button class="copy-btn" onclick="copyWallet()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
+            <div class="step-label" style="margin-top:12px">Step 2: Paste your transaction hash</div>
+            <input type="text" class="modal-input" id="txHashInput" placeholder="0x..." />
+            <div class="step-label" style="margin-top:12px">Your wallet address</div>
+            <input type="text" class="modal-input" id="walletInput" placeholder="0x... (your BSC wallet)" />
+            <button class="submit-btn" id="submitBtn" onclick="submitPayment()" style="margin-top:16px">
+              <span id="submitText">Verify & Activate</span>
+              <span id="submitSpinner" class="spinner" style="display:none"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="paymentError" class="payment-error"></div>
+      <div id="paymentSuccess" class="payment-success"></div>
+
+      <div id="receiptSection" class="receipt-section" style="display:none">
+        <div class="receipt-info">
+          <div class="receipt-row"><span>Balance Added:</span><span id="receiptBalanceAdded">$0.00</span></div>
+          <div class="receipt-row"><span>New Balance:</span><span id="receiptNewBalance">$0.00</span></div>
+        </div>
+        <button class="receipt-btn" id="downloadReceiptBtn" onclick="downloadReceipt()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.active{display:flex}
+    .modal-box{background:var(--bg2);border:1px solid var(--border-gold);border-radius:16px;padding:32px;width:520px;max-width:92vw;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 0 40px rgba(245,166,35,0.1)}
+    .modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer}
+    .modal-close:hover{color:var(--gold)}
+    .modal-box h2{font-family:'Orbitron',sans-serif;font-size:18px;color:var(--gold);margin-bottom:20px}
+    .step-label{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:500}
+    .wallet-display{display:flex;align-items:center;gap:8px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px}
+    .wallet-display code{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);flex:1;word-break:break-all}
+    .copy-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text2);cursor:pointer;transition:all .2s}
+    .copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .amount-display{font-size:16px;color:var(--text);margin-bottom:8px}
+    .amount-display strong{color:var(--gold);font-family:'Orbitron',sans-serif;font-size:18px}
+    .network-badge{display:inline-block;background:rgba(245,166,35,0.1);color:var(--gold);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:20px}
+    .modal-input{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;transition:border-color .2s}
+    .modal-input:focus{border-color:var(--gold)}
+    .submit-btn{width:100%;margin-top:20px;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),#d4891e);color:#000;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .submit-btn:hover{opacity:0.9}
+    .submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .payment-error{color:var(--red);font-size:12px;margin-top:8px;display:none}
+    .payment-success{color:var(--green);font-size:13px;margin-top:8px;display:none;font-weight:600}
+    .spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,0.2);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .pay-option-section{background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px}
+    .pay-option-header{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .pay-option-desc{font-size:12px;color:var(--text3);margin-bottom:12px}
+    .wallet-pay-btn{background:linear-gradient(135deg,#22c55e,#16a34a);margin-top:0}
+    .wallet-pay-status{font-size:12px;margin-bottom:10px;min-height:18px}
+    .pay-divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:12px}
+    .pay-divider::before,.pay-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .manual-section .pay-option-header{color:var(--text2)}
+    .manual-chevron{margin-left:auto;transition:transform .2s}
+    .manual-chevron.open{transform:rotate(180deg)}
+    .manual-form{padding-top:16px}
+    .receipt-section{margin-top:20px;padding:16px;background:var(--bg4);border:1px solid rgba(34,197,94,0.3);border-radius:12px}
+    .receipt-info{margin-bottom:14px}
+    .receipt-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text2)}
+    .receipt-row span:last-child{color:var(--green);font-weight:600;font-family:'JetBrains Mono',monospace}
+    .receipt-btn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--blue),#2563eb);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s}
+    .receipt-btn:hover{opacity:0.9}
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let billing = 'monthly';
+    let selectedPlan = '';
+    let connectedWallet = '';
+    let lastPaymentData = null;
+
+    const RECEIVER = '0x99DF34AefE68BC1d891729ad39CFa2Bd56E41e6B';
+    const USDT_CONTRACT = '0x55d398326f99059ff775485246999027b3197955';
+    const BSC_CHAIN_ID = '0x38';
+
+    const prices = {
+      monthly: { basic: '$9.90', standard: '$19.90', pro: '$49.90' },
+      annual: { basic: '$4.95', standard: '$9.95', pro: '$24.95' }
+    };
+    const planPrices = {
+      basic_monthly: 9.90, basic_annual: 59.40,
+      standard_monthly: 19.90, standard_annual: 119.40,
+      pro_monthly: 49.90, pro_annual: 299.40,
+      starter: 9.90, creator: 24.90, professional: 49.90
+    };
+    const planNames = {
+      basic_monthly: 'Basic (Monthly)', basic_annual: 'Basic (Annual)',
+      standard_monthly: 'Standard (Monthly)', standard_annual: 'Standard (Annual)',
+      pro_monthly: 'Pro (Monthly)', pro_annual: 'Pro (Annual)',
+      starter: 'Starter Pack', creator: 'Creator Pack', professional: 'Professional Pack'
+    };
+
+    function toggleBilling(mode) {
+      billing = mode;
+      document.getElementById('monthlyBtn').classList.toggle('active', mode === 'monthly');
+      document.getElementById('annualBtn').classList.toggle('active', mode === 'annual');
+      document.getElementById('basicPrice').textContent = prices[mode].basic;
+      document.getElementById('standardPrice').textContent = prices[mode].standard;
+      document.getElementById('proPrice').textContent = prices[mode].pro;
+      const annualEls = document.querySelectorAll('.plan-annual-info');
+      const creditEls = document.querySelectorAll('.plan-credits-badge');
+      annualEls.forEach(el => el.style.display = mode === 'annual' ? 'block' : 'none');
+      creditEls.forEach(el => el.style.display = mode === 'annual' ? 'block' : 'none');
+    }
+
+    function handleSubscribe(plan) {
+      selectedPlan = plan + '_' + billing;
+      openPayment();
+    }
+
+    function handlePack(pack) {
+      selectedPlan = pack;
+      openPayment();
+    }
+
+    async function connectWallet() {
+      if (connectedWallet) return;
+      if (!window.ethereum) {
+        alert('No Web3 wallet detected. Please install MetaMask, Trust Wallet, or another EVM-compatible wallet.');
+        return;
+      }
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts && accounts.length > 0) {
+          connectedWallet = accounts[0];
+          updateWalletUI();
+          await ensureBSC();
+        }
+      } catch (e) {
+        console.error('Wallet connection failed:', e);
+        if (e.code !== 4001) {
+          alert('Failed to connect wallet. Please try again.');
+        }
+      }
+    }
+
+    function updateWalletUI() {
+      const btn = document.getElementById('walletBtn');
+      const text = document.getElementById('walletBtnText');
+      if (connectedWallet) {
+        const short = connectedWallet.slice(0, 6) + '...' + connectedWallet.slice(-4);
+        text.textContent = short;
+        btn.classList.add('connected');
+      } else {
+        text.textContent = '';
+        btn.classList.remove('connected');
+      }
+    }
+
+    async function ensureBSC() {
+      if (!window.ethereum) return false;
+      try {
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        if (chainId !== BSC_CHAIN_ID) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: BSC_CHAIN_ID }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: BSC_CHAIN_ID,
+                  chainName: 'BNB Smart Chain',
+                  nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                  rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                  blockExplorerUrls: ['https://bscscan.com/']
+                }]
+              });
+            } else {
+              throw switchErr;
+            }
+          }
+        }
+        return true;
+      } catch (e) {
+        console.error('BSC switch failed:', e);
+        return false;
+      }
+    }
+
+    function openPayment() {
+      const price = planPrices[selectedPlan];
+      const name = planNames[selectedPlan];
+      document.getElementById('modalTitle').textContent = name;
+      document.getElementById('paymentAmount').textContent = '$' + price.toFixed(2);
+      document.getElementById('paymentError').style.display = 'none';
+      document.getElementById('paymentSuccess').style.display = 'none';
+      document.getElementById('receiptSection').style.display = 'none';
+      document.getElementById('paymentOptions').style.display = 'block';
+      document.getElementById('walletPayBtn').disabled = false;
+      document.getElementById('walletPayText').textContent = 'Pay with Wallet';
+      document.getElementById('walletPaySpinner').style.display = 'none';
+      document.getElementById('walletPayStatus').textContent = '';
+      document.getElementById('walletPayStatus').style.color = '';
+
+      if (connectedWallet) {
+        document.getElementById('walletPaySection').style.display = 'block';
+        const walletInput = document.getElementById('walletInput');
+        if (walletInput) walletInput.value = connectedWallet;
+      } else {
+        document.getElementById('walletPaySection').style.display = 'block';
+        document.getElementById('walletPayStatus').textContent = 'Connect your wallet first to use this option';
+        document.getElementById('walletPayStatus').style.color = 'var(--text3)';
+      }
+
+      const txInput = document.getElementById('txHashInput');
+      if (txInput) txInput.value = '';
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('submitText').textContent = 'Verify & Activate';
+      document.getElementById('submitSpinner').style.display = 'none';
+      document.getElementById('manualForm').style.display = 'none';
+      document.getElementById('manualChevron').classList.remove('open');
+
+      lastPaymentData = null;
+      document.getElementById('paymentModal').classList.add('active');
+    }
+
+    function closePayment() {
+      document.getElementById('paymentModal').classList.remove('active');
+    }
+
+    function toggleManual() {
+      const form = document.getElementById('manualForm');
+      const chevron = document.getElementById('manualChevron');
+      const isHidden = form.style.display === 'none';
+      form.style.display = isHidden ? 'block' : 'none';
+      chevron.classList.toggle('open', isHidden);
+      if (isHidden && connectedWallet) {
+        document.getElementById('walletInput').value = connectedWallet;
+      }
+    }
+
+    function copyWallet() {
+      navigator.clipboard.writeText(RECEIVER);
+      const btn = document.querySelector('.copy-btn');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
+      setTimeout(() => {
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+      }, 2000);
+    }
+
+    async function payWithWallet() {
+      const statusEl = document.getElementById('walletPayStatus');
+      const errEl = document.getElementById('paymentError');
+      errEl.style.display = 'none';
+
+      if (!connectedWallet) {
+        statusEl.textContent = 'Connecting wallet...';
+        statusEl.style.color = 'var(--gold)';
+        await connectWallet();
+        if (!connectedWallet) {
+          statusEl.textContent = 'Please connect your wallet first';
+          statusEl.style.color = 'var(--red)';
+          return;
+        }
+      }
+
+      const onBSC = await ensureBSC();
+      if (!onBSC) {
+        statusEl.textContent = 'Please switch to BSC network';
+        statusEl.style.color = 'var(--red)';
+        return;
+      }
+
+      const price = planPrices[selectedPlan];
+      const amountWei = ethers.parseUnits(price.toFixed(2), 18);
+
+      document.getElementById('walletPayBtn').disabled = true;
+      document.getElementById('walletPayText').textContent = 'Confirm in wallet...';
+      document.getElementById('walletPaySpinner').style.display = 'inline-block';
+      statusEl.textContent = 'Waiting for wallet confirmation...';
+      statusEl.style.color = 'var(--gold)';
+
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+
+        const usdtAbi = ['function transfer(address to, uint256 amount) returns (bool)'];
+        const usdtContract = new ethers.Contract(USDT_CONTRACT, usdtAbi, signer);
+
+        const tx = await usdtContract.transfer(RECEIVER, amountWei);
+
+        statusEl.textContent = 'Transaction sent! Waiting for confirmation...';
+        document.getElementById('walletPayText').textContent = 'Processing...';
+
+        await tx.wait();
+
+        statusEl.textContent = 'Transaction confirmed! Verifying payment...';
+        document.getElementById('walletPayText').textContent = 'Verifying...';
+
+        await verifyPayment(tx.hash, connectedWallet);
+
+      } catch (e) {
+        console.error('Wallet payment error:', e);
+        document.getElementById('walletPayBtn').disabled = false;
+        document.getElementById('walletPayText').textContent = 'Pay with Wallet';
+        document.getElementById('walletPaySpinner').style.display = 'none';
+        if (e.code === 'ACTION_REJECTED' || e.code === 4001) {
+          statusEl.textContent = 'Transaction rejected by user';
+          statusEl.style.color = 'var(--text3)';
+        } else if (e.reason) {
+          statusEl.textContent = 'Error: ' + e.reason;
+          statusEl.style.color = 'var(--red)';
+        } else {
+          statusEl.textContent = 'Transaction failed. Try manual payment below.';
+          statusEl.style.color = 'var(--red)';
+        }
+      }
+    }
+
+    async function verifyPayment(txHash, wallet, retries = 3) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const statusEl = document.getElementById('walletPayStatus');
+          if (statusEl && attempt > 1) {
+            statusEl.textContent = 'Verifying payment... (attempt ' + attempt + '/' + retries + ')';
+            statusEl.style.color = 'var(--gold)';
+          }
+          const resp = await fetch('/api/premium/purchase', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet, tx_hash: txHash, plan: selectedPlan })
+          });
+          const data = await resp.json();
+          if (resp.ok && data.success) {
+            lastPaymentData = {
+              plan: planNames[selectedPlan],
+              amount: planPrices[selectedPlan],
+              txHash: txHash,
+              wallet: wallet,
+              balanceAdded: data.balance_added,
+              newBalance: data.new_balance,
+              date: new Date()
+            };
+            showSuccess(data);
+            return;
+          } else {
+            const notFound = (data.error || '').toLowerCase().includes('not found');
+            if (notFound && attempt < retries) {
+              await new Promise(r => setTimeout(r, 5000));
+              continue;
+            }
+            const errEl = document.getElementById('paymentError');
+            errEl.textContent = data.error || 'Verification failed. Please try again.';
+            errEl.style.display = 'block';
+            document.getElementById('walletPayBtn').disabled = false;
+            document.getElementById('walletPayText').textContent = 'Pay with Wallet';
+            document.getElementById('walletPaySpinner').style.display = 'none';
+            if (statusEl) statusEl.textContent = '';
+            document.getElementById('txHashInput').value = txHash;
+            document.getElementById('walletInput').value = wallet;
+            const manualForm = document.getElementById('manualForm');
+            if (manualForm) manualForm.style.display = 'block';
+            return;
+          }
+        } catch (e) {
+          if (attempt < retries) {
+            await new Promise(r => setTimeout(r, 5000));
+            continue;
+          }
+          const errEl = document.getElementById('paymentError');
+          errEl.textContent = 'Network error. Please try again using the manual form below.';
+          errEl.style.display = 'block';
+          document.getElementById('walletPayBtn').disabled = false;
+          document.getElementById('walletPayText').textContent = 'Pay with Wallet';
+          document.getElementById('walletPaySpinner').style.display = 'none';
+          document.getElementById('walletPayStatus').textContent = '';
+          document.getElementById('txHashInput').value = txHash;
+          document.getElementById('walletInput').value = wallet;
+          const manualForm = document.getElementById('manualForm');
+          if (manualForm) manualForm.style.display = 'block';
+          return;
+        }
+      }
+    }
+
+    function showSuccess(data) {
+      document.getElementById('paymentOptions').style.display = 'none';
+      const successEl = document.getElementById('paymentSuccess');
+      successEl.textContent = 'Payment verified! $' + data.balance_added.toFixed(2) + ' premium balance added.';
+      successEl.style.display = 'block';
+      document.getElementById('receiptBalanceAdded').textContent = '$' + data.balance_added.toFixed(2);
+      document.getElementById('receiptNewBalance').textContent = '$' + data.new_balance.toFixed(2);
+      document.getElementById('receiptSection').style.display = 'block';
+    }
+
+    async function submitPayment() {
+      const txHash = document.getElementById('txHashInput').value.trim();
+      const wallet = document.getElementById('walletInput').value.trim();
+      const errEl = document.getElementById('paymentError');
+      const successEl = document.getElementById('paymentSuccess');
+      errEl.style.display = 'none';
+      successEl.style.display = 'none';
+
+      if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+        errEl.textContent = 'Please enter a valid BSC wallet address';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (!txHash || !/^0x[a-fA-F0-9]{64}$/.test(txHash)) {
+        errEl.textContent = 'Please enter a valid transaction hash';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitText').textContent = 'Verifying...';
+      document.getElementById('submitSpinner').style.display = 'inline-block';
+
+      try {
+        const resp = await fetch('/api/premium/purchase', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wallet, tx_hash: txHash, plan: selectedPlan })
+        });
+        const data = await resp.json();
+        if (resp.ok && data.success) {
+          lastPaymentData = {
+            plan: planNames[selectedPlan],
+            amount: planPrices[selectedPlan],
+            txHash: txHash,
+            wallet: wallet,
+            balanceAdded: data.balance_added,
+            newBalance: data.new_balance,
+            date: new Date()
+          };
+          showSuccess(data);
+        } else {
+          errEl.textContent = data.error || 'Verification failed. Please try again.';
+          errEl.style.display = 'block';
+          document.getElementById('submitBtn').disabled = false;
+          document.getElementById('submitText').textContent = 'Verify & Activate';
+          document.getElementById('submitSpinner').style.display = 'none';
+        }
+      } catch (e) {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitText').textContent = 'Verify & Activate';
+        document.getElementById('submitSpinner').style.display = 'none';
+      }
+    }
+
+    function downloadReceipt() {
+      if (!lastPaymentData) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const d = lastPaymentData;
+      const pw = 210, ph = 297;
+
+      doc.setFillColor(18, 30, 28);
+      doc.rect(0, 0, pw, ph, 'F');
+
+      doc.setFillColor(24, 42, 38);
+      doc.rect(0, 0, pw, 8, 'F');
+
+      doc.setFillColor(55, 140, 120);
+      doc.roundedRect(145, 55, 50, 200, 4, 4, 'F');
+
+      doc.setTextColor(55, 140, 120);
+      doc.setFontSize(36);
+      doc.setFont('helvetica', 'bold');
+      doc.text('INVOICE.', pw - 20, 35, { align: 'right' });
+
+      doc.setFillColor(55, 140, 120);
+      doc.circle(155, 260, 14, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('TORD', 155, 259, { align: 'center' });
+      doc.text('AI', 155, 264, { align: 'center' });
+
+      doc.save2 = doc.setFontSize;
+      doc.setTextColor(200, 220, 215);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+
+      const dateStr = d.date.toLocaleString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+      const invoiceNo = 'INV-' + Date.now().toString(36).toUpperCase();
+
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(8);
+      doc.text('INVOICE NO', 20, 50);
+      doc.text('DATE', 70, 50);
+      doc.text('NETWORK', 110, 50);
+
+      doc.setTextColor(200, 220, 215);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(invoiceNo, 20, 56);
+      doc.text(dateStr, 70, 56);
+      doc.text('BSC (BEP20)', 110, 56);
+
+      doc.setFillColor(28, 48, 44);
+      doc.roundedRect(18, 64, 120, 24, 3, 3, 'F');
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.text('BILL TO', 24, 72);
+      doc.setTextColor(55, 140, 120);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(d.wallet.substring(0, 22), 24, 79);
+      doc.setFontSize(8);
+      doc.text(d.wallet.substring(22), 24, 84);
+
+      doc.setTextColor(55, 140, 120);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+
+      const tableTop = 100;
+      doc.setFillColor(28, 48, 44);
+      doc.roundedRect(18, tableTop - 4, 120, 12, 2, 2, 'F');
+      doc.setTextColor(100, 160, 145);
+      doc.setFontSize(7);
+      doc.text('#', 24, tableTop + 3);
+      doc.text('DESCRIPTION', 34, tableTop + 3);
+      doc.text('AMOUNT', 120, tableTop + 3, { align: 'right' });
+
+      doc.setDrawColor(35, 60, 55);
+      let ty = tableTop + 14;
+
+      const items = [
+        ['1', d.plan, '$' + d.amount.toFixed(2)],
+        ['2', 'Premium Balance Credit', '$' + d.balanceAdded.toFixed(2)]
+      ];
+
+      items.forEach(([num, desc, amt]) => {
+        doc.setLineWidth(0.3);
+        doc.line(20, ty + 6, 136, ty + 6);
+        doc.setTextColor(100, 140, 130);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text(num, 24, ty + 3);
+        doc.setTextColor(200, 220, 215);
+        doc.setFont('helvetica', 'bold');
+        doc.text(desc, 34, ty + 3);
+        doc.setTextColor(55, 200, 170);
+        doc.text(amt, 120, ty + 3, { align: 'right' });
+        ty += 14;
+      });
+
+      doc.setFillColor(28, 48, 44);
+      doc.roundedRect(18, ty + 4, 120, 36, 3, 3, 'F');
+
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text('PAYMENT METHOD', 24, ty + 14);
+      doc.setTextColor(200, 220, 215);
+      doc.setFont('helvetica', 'bold');
+      doc.text('USDT (Tether)', 80, ty + 14);
+
+      doc.setTextColor(100, 140, 130);
+      doc.setFont('helvetica', 'normal');
+      doc.text('TOTAL PAID', 24, ty + 24);
+      doc.setTextColor(55, 200, 170);
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text('$' + d.amount.toFixed(2), 80, ty + 25);
+
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text('NEW BALANCE', 24, ty + 34);
+      doc.setTextColor(200, 220, 215);
+      doc.setFont('helvetica', 'bold');
+      doc.text('$' + d.newBalance.toFixed(2), 80, ty + 34);
+
+      const txY = ty + 52;
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.text('TRANSACTION HASH', 20, txY);
+      doc.setTextColor(55, 140, 120);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text(d.txHash, 20, txY + 6);
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(36);
+      doc.setFont('helvetica', 'bold');
+      const tyText = 'THANK';
+      const tyText2 = 'YOU.';
+      doc.text(tyText, 170, 120, { angle: 90 });
+      doc.text(tyText2, 185, 120, { angle: 90 });
+
+      doc.setTextColor(100, 140, 130);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.text('TORD AI  |  tordlabs.io  |  @torddefi  |  BSC Network', pw / 2, ph - 12, { align: 'center' });
+
+      doc.save('TORD_AI_Invoice_' + invoiceNo + '.pdf');
+    }
+
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        connectedWallet = accounts[0] || '';
+        updateWalletUI();
+      });
+      window.ethereum.on('chainChanged', async (newChainId) => {
+        if (newChainId !== BSC_CHAIN_ID) {
+          await ensureBSC();
+        }
+        window.location.reload();
+      });
+    }
+  </script>
+</body>
+</html>

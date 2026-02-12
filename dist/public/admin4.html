@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Admin | Tord Labs</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-card: #111111;
+      --bg-input: #1a1a1a;
+      --border: #222222;
+      --border-gold: rgba(245, 166, 35, 0.25);
+      --text-primary: #ffffff;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --accent-gold: #f5a623;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-blue: #3b82f6;
+    }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+
+    .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-box {
+      background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px;
+      padding: 40px; width: 360px; text-align: center;
+      box-shadow: 0 0 30px rgba(245,166,35,0.08);
+    }
+    .login-box h1 { font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 8px; color: var(--accent-gold); }
+    .login-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+
+    .admin-panel { display: none; }
+    .admin-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-nav h1 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--accent-gold); }
+    .admin-nav .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    .admin-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px 64px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    }
+    .stat-card .label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card .value { font-family: 'Orbitron', sans-serif; font-size: 28px; color: var(--accent-gold); }
+    .stat-card .sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.green .value { color: var(--accent-green); }
+    .stat-card.red .value { color: var(--accent-red); }
+    .stat-card.blue .value { color: var(--accent-blue); }
+
+    .section { margin-bottom: 32px; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+    }
+    .section-header h2 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--accent-gold); }
+
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card);
+      color: var(--text-secondary); cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 13px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(245,166,35,0.08); }
+
+    .search-bar {
+      display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .search-bar input, .search-bar select {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 14px; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 13px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-bar input:focus, .search-bar select:focus { border-color: var(--accent-gold); }
+    .search-bar input { flex: 1; min-width: 200px; }
+
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      text-align: left; padding: 10px 12px; font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 12px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .data-table tr:hover td { background: rgba(245,166,35,0.03); }
+    .data-table .wallet { font-family: monospace; font-size: 12px; color: var(--accent-gold); }
+    .data-table .tx-hash { font-family: monospace; font-size: 11px; color: var(--accent-blue); }
+    .data-table .tx-hash a { color: var(--accent-blue); text-decoration: none; }
+    .data-table .tx-hash a:hover { text-decoration: underline; }
+
+    .status-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .status-badge.active { background: rgba(34,197,94,0.15); color: var(--accent-green); }
+    .status-badge.banned { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+    .status-badge.confirmed { background: rgba(34,197,94,0.15); color: var(--accent-green); }
+    .status-badge.pending { background: rgba(245,166,35,0.15); color: var(--accent-gold); }
+    .status-badge.subscription { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .status-badge.credit_pack { background: rgba(168,85,247,0.15); color: #a855f7; }
+
+    .member-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px;
+      font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    }
+    .member-badge img { width: 16px; height: 16px; }
+
+    .action-btn {
+      padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-secondary); cursor: pointer; font-size: 11px; font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .action-btn.danger { border-color: rgba(239,68,68,0.3); color: var(--accent-red); }
+    .action-btn.danger:hover { background: rgba(239,68,68,0.1); }
+    .action-btn.success { border-color: rgba(34,197,94,0.3); color: var(--accent-green); }
+    .action-btn.success:hover { background: rgba(34,197,94,0.1); }
+
+    .btn {
+      padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-gold { background: var(--accent-gold); color: #000; }
+    .btn-gold:hover { background: #d4891e; }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--border); color: var(--text-secondary);
+    }
+    .btn-outline:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 16px; }
+    .pagination .info { font-size: 12px; color: var(--text-muted); }
+
+    .input-field {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; width: 100%; outline: none;
+    }
+    .input-field:focus { border-color: var(--accent-gold); }
+    select.input-field { cursor: pointer; }
+    select.input-field option { background: var(--bg-card); color: var(--text-primary); }
+
+    .table-wrap { overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 14px; }
+
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px;
+      padding: 28px; width: 440px; max-width: 90vw;
+    }
+    .modal h3 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--accent-gold); margin-bottom: 16px; }
+    .modal .form-group { margin-bottom: 16px; }
+    .modal .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+    .modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    .badge-options {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;
+    }
+    .badge-option {
+      display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg-input); cursor: pointer;
+      transition: all 0.2s; font-size: 12px; color: var(--text-secondary);
+    }
+    .badge-option:hover { border-color: var(--accent-gold); }
+    .badge-option.selected { border-color: var(--accent-gold); background: rgba(245,166,35,0.08); color: var(--accent-gold); }
+    .badge-option img { width: 24px; height: 24px; }
+
+    .wallet-short { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .admin-container { padding: 16px 10px 48px; }
+      .data-table { font-size: 12px; }
+      .data-table th, .data-table td { padding: 8px 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <img src="/logo.png" alt="TORD" style="width:48px;height:48px;margin-bottom:12px" />
+      <h1>Premium Admin</h1>
+      <p>Manage premium members & purchases</p>
+      <input type="password" class="input-field" id="loginPassword" placeholder="Enter admin password" style="margin-bottom:16px" />
+      <button class="btn btn-gold" style="width:100%" onclick="doLogin()">Login</button>
+      <div id="loginError" style="color:var(--accent-red);font-size:12px;margin-top:10px;display:none"></div>
+    </div>
+  </div>
+
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-nav">
+      <h1>Premium Admin</h1>
+      <div class="nav-actions">
+        <button class="btn btn-gold" onclick="openAddMember()" style="padding:8px 16px;font-size:12px">+ Add Premium</button>
+        <button class="btn btn-outline" onclick="loadStats()">Refresh</button>
+        <button class="btn btn-outline" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="admin-container">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="label">Total Members</div><div class="value" id="statMembers">-</div></div>
+        <div class="stat-card green"><div class="label">Active Members</div><div class="value" id="statActive">-</div></div>
+        <div class="stat-card red"><div class="label">Banned Members</div><div class="value" id="statBanned">-</div></div>
+        <div class="stat-card blue"><div class="label">Total Purchases</div><div class="value" id="statPurchases">-</div></div>
+        <div class="stat-card"><div class="label">Total Revenue</div><div class="value" id="statRevenue">-</div><div class="sub">USDT received</div></div>
+        <div class="stat-card green"><div class="label">Total Balance Used</div><div class="value" id="statUsed">-</div><div class="sub">By members</div></div>
+        <div class="stat-card blue"><div class="label">OpenRouter Balance</div><div class="value" id="statORBalance">-</div><div class="sub" id="statORSub">API credits</div></div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tabMembers" onclick="switchTab('members')">Members</button>
+        <button class="tab-btn" id="tabPurchases" onclick="switchTab('purchases')">Purchases</button>
+      </div>
+
+      <div class="section" id="membersSection">
+        <div class="search-bar">
+          <input type="text" id="memberSearch" placeholder="Search by wallet address..." oninput="debounceSearch('members')" />
+          <select id="memberStatusFilter" onchange="loadMembers(1)">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="banned">Banned</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Wallet</th>
+                <th>Badge</th>
+                <th>Balance</th>
+                <th>Purchased</th>
+                <th>Used</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="membersPagination"></div>
+      </div>
+
+      <div class="section" id="purchasesSection" style="display:none">
+        <div class="search-bar">
+          <input type="text" id="purchaseSearch" placeholder="Search by wallet or tx hash..." oninput="debounceSearch('purchases')" />
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Tx Hash</th>
+                <th>Wallet</th>
+                <th>Amount</th>
+                <th>Balance Added</th>
+                <th>Plan</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="purchasesBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="purchasesPagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="adjustModal">
+    <div class="modal">
+      <h3>Adjust Balance</h3>
+      <div class="form-group">
+        <label>Wallet</label>
+        <input type="text" class="input-field" id="adjustWallet" readonly />
+      </div>
+      <div class="form-group">
+        <label>Amount (positive to add, negative to deduct)</label>
+        <input type="number" class="input-field" id="adjustAmount" step="0.01" placeholder="e.g. 10 or -5" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('adjustModal')">Cancel</button>
+        <button class="btn btn-gold" onclick="submitAdjust()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addMemberModal">
+    <div class="modal">
+      <h3>Add Premium Member</h3>
+      <div class="form-group">
+        <label>Wallet Address</label>
+        <input type="text" class="input-field" id="addWallet" placeholder="0x..." />
+      </div>
+      <div class="form-group">
+        <label>Initial Balance ($)</label>
+        <input type="number" class="input-field" id="addBalance" step="0.01" value="0" placeholder="0.00" />
+      </div>
+      <div class="form-group">
+        <label>Plan Name (optional)</label>
+        <input type="text" class="input-field" id="addPlan" placeholder="e.g. Basic, Pro..." />
+      </div>
+      <div class="form-group">
+        <label>Badge</label>
+        <div class="badge-options" id="addBadgeOptions"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('addMemberModal')">Cancel</button>
+        <button class="btn btn-gold" onclick="submitAddMember()">Add Member</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="badgeModal">
+    <div class="modal">
+      <h3>Change Badge</h3>
+      <div class="form-group">
+        <label>Wallet</label>
+        <input type="text" class="input-field" id="badgeWallet" readonly />
+      </div>
+      <div class="form-group">
+        <label>Select Badge</label>
+        <div class="badge-options" id="badgeOptionsEdit"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('badgeModal')">Cancel</button>
+        <button class="btn btn-gold" onclick="submitBadge()">Save Badge</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let authToken = localStorage.getItem('admin_token') || '';
+    let currentTab = 'members';
+    let searchTimers = {};
+    let selectedAddBadge = null;
+    let selectedEditBadge = null;
+
+    const BADGE_CONFIG = {
+      dev: { name: 'Developer', icon: '/badges/dev.png', color: '#ef4444' },
+      holder: { name: 'Holder', icon: '/badges/holder.png', color: '#22c55e' },
+      basic: { name: 'Basic', icon: '/badges/basic.png', color: '#cd7f32' },
+      standard: { name: 'Standard', icon: '/badges/standard.png', color: '#c0c0c0' },
+      pro: { name: 'Pro', icon: '/badges/pro.png', color: '#f5a623' },
+      starter: { name: 'Starter Pack', icon: 'https://cdn-icons-png.flaticon.com/128/3068/3068326.png', color: '#a855f7' },
+      creator: { name: 'Creator Pack', icon: '/badges/creator.png', color: '#ec4899' },
+      professional: { name: 'Professional Pack', icon: 'https://cdn-icons-png.flaticon.com/128/3068/3068349.png', color: '#f59e0b' }
+    };
+
+    function renderBadgeOptions(containerId, selectedRef) {
+      const container = document.getElementById(containerId);
+      let html = `<div class="badge-option ${!selectedRef ? 'selected' : ''}" onclick="selectBadge('${containerId}', null, this)">
+        <span>None</span>
+      </div>`;
+      for (const [key, cfg] of Object.entries(BADGE_CONFIG)) {
+        html += `<div class="badge-option" onclick="selectBadge('${containerId}', '${key}', this)">
+          <img src="${cfg.icon}" alt="${cfg.name}" />
+          <span>${cfg.name}</span>
+        </div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function selectBadge(containerId, badge, el) {
+      document.querySelectorAll(`#${containerId} .badge-option`).forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      if (containerId === 'addBadgeOptions') selectedAddBadge = badge;
+      else selectedEditBadge = badge;
+    }
+
+    function renderMemberBadge(badge) {
+      if (!badge || !BADGE_CONFIG[badge]) return '<span style="color:var(--text-muted)">-</span>';
+      const cfg = BADGE_CONFIG[badge];
+      return `<span class="member-badge" style="border-color:${cfg.color}30;background:${cfg.color}15;color:${cfg.color}">
+        <img src="${cfg.icon}" alt="${cfg.name}" /> ${cfg.name}
+      </span>`;
+    }
+
+    async function api(method, url, body) {
+      const opts = { method, headers: { 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json' } };
+      if (body) opts.body = JSON.stringify(body);
+      const resp = await fetch(url, opts);
+      if (resp.status === 401) { doLogout(); throw new Error('Unauthorized'); }
+      return resp.json();
+    }
+
+    async function doLogin() {
+      const pw = document.getElementById('loginPassword').value;
+      try {
+        const resp = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: 'admin', password: pw })
+        });
+        const data = await resp.json();
+        if (data.token) {
+          authToken = data.token;
+          localStorage.setItem('admin_token', authToken);
+          showPanel();
+        } else {
+          document.getElementById('loginError').textContent = 'Invalid password';
+          document.getElementById('loginError').style.display = 'block';
+        }
+      } catch (e) {
+        document.getElementById('loginError').textContent = 'Login failed';
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    function doLogout() {
+      fetch('/api/admin/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + authToken } });
+      authToken = '';
+      localStorage.removeItem('admin_token');
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('adminPanel').style.display = 'none';
+    }
+
+    async function showPanel() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      await Promise.all([loadStats(), loadMembers(1)]);
+    }
+
+    async function loadStats() {
+      try {
+        const data = await api('GET', '/api/admin4/stats');
+        document.getElementById('statMembers').textContent = data.members.total;
+        document.getElementById('statActive').textContent = data.members.active;
+        document.getElementById('statBanned').textContent = data.members.banned;
+        document.getElementById('statPurchases').textContent = data.purchases.total;
+        document.getElementById('statRevenue').textContent = '$' + data.purchases.revenue.toFixed(2);
+        document.getElementById('statUsed').textContent = '$' + data.total_balance_used.toFixed(2);
+        loadOpenRouterBalance();
+      } catch (e) { console.error('Stats error:', e); }
+    }
+
+    async function loadOpenRouterBalance() {
+      try {
+        const data = await api('GET', '/api/admin4/openrouter-balance');
+        const el = document.getElementById('statORBalance');
+        const sub = document.getElementById('statORSub');
+        if (data.error && !data.remaining && data.remaining !== 0) {
+          el.textContent = 'N/A';
+          sub.textContent = data.error;
+        } else if (data.raw && data.raw.data) {
+          const d = data.raw.data;
+          const remaining = d.total_credits != null && d.total_usage != null ? (d.total_credits - d.total_usage).toFixed(4) : (d.remaining_credits != null ? d.remaining_credits.toFixed(4) : 'N/A');
+          el.textContent = '$' + remaining;
+          sub.textContent = d.total_usage != null ? 'Used: $' + d.total_usage.toFixed(4) : 'API credits';
+        } else if (data.remaining != null) {
+          el.textContent = '$' + data.remaining.toFixed(4);
+          sub.textContent = data.usage != null ? 'Used: $' + data.usage.toFixed(4) : 'API credits';
+        } else {
+          el.textContent = 'N/A';
+        }
+      } catch (e) { console.error('OR balance error:', e); }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabMembers').classList.toggle('active', tab === 'members');
+      document.getElementById('tabPurchases').classList.toggle('active', tab === 'purchases');
+      document.getElementById('membersSection').style.display = tab === 'members' ? 'block' : 'none';
+      document.getElementById('purchasesSection').style.display = tab === 'purchases' ? 'block' : 'none';
+      if (tab === 'purchases') loadPurchases(1);
+    }
+
+    function debounceSearch(type) {
+      clearTimeout(searchTimers[type]);
+      searchTimers[type] = setTimeout(() => {
+        if (type === 'members') loadMembers(1);
+        else loadPurchases(1);
+      }, 400);
+    }
+
+    function shortWallet(w) {
+      if (!w) return '-';
+      return w.slice(0, 6) + '...' + w.slice(-4);
+    }
+
+    function formatDate(d) {
+      if (!d) return '-';
+      const dt = new Date(d);
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' +
+             dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function loadMembers(page) {
+      try {
+        const search = document.getElementById('memberSearch').value;
+        const status = document.getElementById('memberStatusFilter').value;
+        const data = await api('GET', `/api/admin4/members?page=${page}&limit=20&search=${encodeURIComponent(search)}&status=${status}`);
+        const tbody = document.getElementById('membersBody');
+
+        if (data.members.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state">No members found</div></td></tr>';
+        } else {
+          tbody.innerHTML = data.members.map(m => `
+            <tr>
+              <td><span class="wallet" title="${m.wallet_address}">${shortWallet(m.wallet_address)}</span></td>
+              <td>${renderMemberBadge(m.badge)}</td>
+              <td style="color:var(--accent-gold);font-weight:600">$${parseFloat(m.premium_balance).toFixed(2)}</td>
+              <td>$${parseFloat(m.total_purchased).toFixed(2)}</td>
+              <td>$${parseFloat(m.total_used).toFixed(2)}</td>
+              <td><span class="status-badge ${m.status}">${m.status}</span></td>
+              <td style="font-size:11px;color:var(--text-muted)">${formatDate(m.created_at)}</td>
+              <td>
+                <div style="display:flex;gap:4px;flex-wrap:wrap">
+                  <button class="action-btn" onclick="openBadgeEdit('${m.wallet_address}', '${m.badge || ''}')" title="Change badge">Badge</button>
+                  <button class="action-btn" onclick="openAdjust('${m.wallet_address}')" title="Adjust balance">$$</button>
+                  ${m.status === 'active'
+                    ? `<button class="action-btn danger" onclick="banMember('${m.wallet_address}')" title="Ban">Ban</button>`
+                    : `<button class="action-btn success" onclick="unbanMember('${m.wallet_address}')" title="Unban">Unban</button>`
+                  }
+                  <button class="action-btn danger" onclick="removeMember('${m.wallet_address}')" title="Remove premium">Del</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        const totalPages = Math.ceil(data.total / data.limit);
+        document.getElementById('membersPagination').innerHTML = totalPages > 1 ? `
+          <button class="action-btn" onclick="loadMembers(${Math.max(1, page - 1)})" ${page <= 1 ? 'disabled' : ''}>Prev</button>
+          <span class="info">Page ${page} of ${totalPages} (${data.total} total)</span>
+          <button class="action-btn" onclick="loadMembers(${Math.min(totalPages, page + 1)})" ${page >= totalPages ? 'disabled' : ''}>Next</button>
+        ` : `<span class="info">${data.total} member${data.total !== 1 ? 's' : ''}</span>`;
+      } catch (e) { console.error('Members error:', e); }
+    }
+
+    async function loadPurchases(page) {
+      try {
+        const search = document.getElementById('purchaseSearch').value;
+        const data = await api('GET', `/api/admin4/purchases?page=${page}&limit=20&search=${encodeURIComponent(search)}`);
+        const tbody = document.getElementById('purchasesBody');
+
+        if (data.purchases.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state">No purchases found</div></td></tr>';
+        } else {
+          tbody.innerHTML = data.purchases.map(p => `
+            <tr>
+              <td><span class="tx-hash"><a href="https://bscscan.com/tx/${p.tx_hash}" target="_blank" title="${p.tx_hash}">${p.tx_hash.slice(0, 10)}...${p.tx_hash.slice(-6)}</a></span></td>
+              <td><span class="wallet" title="${p.wallet_address}">${shortWallet(p.wallet_address)}</span></td>
+              <td style="font-weight:600">$${parseFloat(p.amount).toFixed(2)}</td>
+              <td style="color:var(--accent-gold)">$${parseFloat(p.balance_added).toFixed(2)}</td>
+              <td>${p.plan_name}</td>
+              <td><span class="status-badge ${p.purchase_type}">${p.purchase_type === 'subscription' ? 'Sub' : 'Pack'}${p.billing_cycle ? ' (' + p.billing_cycle + ')' : ''}</span></td>
+              <td><span class="status-badge ${p.status}">${p.status}</span></td>
+              <td style="font-size:11px;color:var(--text-muted)">${formatDate(p.created_at)}</td>
+            </tr>
+          `).join('');
+        }
+
+        const totalPages = Math.ceil(data.total / data.limit);
+        document.getElementById('purchasesPagination').innerHTML = totalPages > 1 ? `
+          <button class="action-btn" onclick="loadPurchases(${Math.max(1, page - 1)})" ${page <= 1 ? 'disabled' : ''}>Prev</button>
+          <span class="info">Page ${page} of ${totalPages} (${data.total} total)</span>
+          <button class="action-btn" onclick="loadPurchases(${Math.min(totalPages, page + 1)})" ${page >= totalPages ? 'disabled' : ''}>Next</button>
+        ` : `<span class="info">${data.total} purchase${data.total !== 1 ? 's' : ''}</span>`;
+      } catch (e) { console.error('Purchases error:', e); }
+    }
+
+    async function banMember(wallet) {
+      if (!confirm('Ban this member? They will not be able to use premium features.')) return;
+      try {
+        await api('PUT', `/api/admin4/member/${wallet}/ban`);
+        loadMembers(1);
+        loadStats();
+      } catch (e) { alert('Failed to ban member'); }
+    }
+
+    async function unbanMember(wallet) {
+      if (!confirm('Unban this member?')) return;
+      try {
+        await api('PUT', `/api/admin4/member/${wallet}/unban`);
+        loadMembers(1);
+        loadStats();
+      } catch (e) { alert('Failed to unban member'); }
+    }
+
+    async function removeMember(wallet) {
+      if (!confirm('Remove this wallet from premium? This will delete their membership record permanently.')) return;
+      try {
+        await api('DELETE', `/api/admin4/member/${wallet}`);
+        loadMembers(1);
+        loadStats();
+      } catch (e) { alert('Failed to remove member'); }
+    }
+
+    function openAdjust(wallet) {
+      document.getElementById('adjustWallet').value = wallet;
+      document.getElementById('adjustAmount').value = '';
+      document.getElementById('adjustModal').classList.add('active');
+    }
+
+    function openAddMember() {
+      document.getElementById('addWallet').value = '';
+      document.getElementById('addBalance').value = '0';
+      document.getElementById('addPlan').value = '';
+      selectedAddBadge = null;
+      renderBadgeOptions('addBadgeOptions', null);
+      document.getElementById('addMemberModal').classList.add('active');
+    }
+
+    function openBadgeEdit(wallet, currentBadge) {
+      document.getElementById('badgeWallet').value = wallet;
+      selectedEditBadge = currentBadge || null;
+      renderBadgeOptions('badgeOptionsEdit', selectedEditBadge);
+      if (selectedEditBadge) {
+        const options = document.querySelectorAll('#badgeOptionsEdit .badge-option');
+        options.forEach(opt => {
+          opt.classList.remove('selected');
+          if (opt.onclick.toString().includes(`'${selectedEditBadge}'`)) opt.classList.add('selected');
+        });
+        setTimeout(() => {
+          const allOpts = document.querySelectorAll('#badgeOptionsEdit .badge-option');
+          allOpts.forEach(o => o.classList.remove('selected'));
+          allOpts.forEach(o => {
+            const txt = o.textContent.trim();
+            const cfg = BADGE_CONFIG[selectedEditBadge];
+            if (cfg && txt === cfg.name) o.classList.add('selected');
+          });
+        }, 0);
+      }
+      document.getElementById('badgeModal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    async function submitAdjust() {
+      const wallet = document.getElementById('adjustWallet').value;
+      const amount = parseFloat(document.getElementById('adjustAmount').value);
+      if (!amount || isNaN(amount)) return alert('Enter a valid amount');
+      try {
+        const data = await api('PUT', `/api/admin4/member/${wallet}/adjust`, { amount });
+        alert('Balance updated. New balance: $' + data.new_balance.toFixed(2));
+        closeModal('adjustModal');
+        loadMembers(1);
+        loadStats();
+      } catch (e) { alert('Failed to adjust balance'); }
+    }
+
+    async function submitAddMember() {
+      const wallet = document.getElementById('addWallet').value.trim();
+      const balance = parseFloat(document.getElementById('addBalance').value) || 0;
+      const plan = document.getElementById('addPlan').value.trim() || null;
+
+      if (!wallet || !/^0x[a-fA-F0-9]{40}$/i.test(wallet)) return alert('Enter a valid wallet address (0x...)');
+
+      try {
+        const result = await api('POST', '/api/admin4/member/add', {
+          wallet, balance, plan, badge: selectedAddBadge
+        });
+        if (result.error) return alert(result.error);
+        alert('Premium member added successfully!');
+        closeModal('addMemberModal');
+        loadMembers(1);
+        loadStats();
+      } catch (e) { alert('Failed to add member'); }
+    }
+
+    async function submitBadge() {
+      const wallet = document.getElementById('badgeWallet').value;
+      try {
+        await api('PUT', `/api/admin4/member/${wallet}/badge`, { badge: selectedEditBadge });
+        closeModal('badgeModal');
+        loadMembers(1);
+      } catch (e) { alert('Failed to update badge'); }
+    }
+
+    document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    (async () => {
+      if (authToken) {
+        try {
+          const resp = await fetch('/api/admin/verify', { headers: { 'Authorization': 'Bearer ' + authToken } });
+          if (resp.ok) { showPanel(); return; }
+        } catch (e) {}
+      }
+      document.getElementById('loginScreen').style.display = 'flex';
+    })();
+  </script>
+</body>
+</html>

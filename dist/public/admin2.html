@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airdrop Admin | Tord Labs</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-card: #111111;
+      --bg-input: #1a1a1a;
+      --border: #222222;
+      --border-gold: rgba(245, 166, 35, 0.25);
+      --text-primary: #ffffff;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --accent-gold: #f5a623;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+    }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+
+    .login-screen {
+      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    }
+    .login-box {
+      background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 16px;
+      padding: 40px; width: 360px; text-align: center;
+      box-shadow: 0 0 30px rgba(245,166,35,0.08);
+    }
+    .login-box h1 { font-family: 'Orbitron', sans-serif; font-size: 20px; margin-bottom: 8px; color: var(--accent-gold); }
+    .login-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; }
+
+    .admin-panel { display: none; }
+    .admin-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-nav h1 { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--accent-gold); }
+    .admin-nav .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    .admin-container { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--bg-card); border-radius: 10px; padding: 4px; border: 1px solid var(--border); }
+    .tab { flex: 1; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-secondary); transition: all 0.2s; }
+    .tab.active { background: var(--accent-gold); color: #000; font-weight: 600; }
+    .tab:hover:not(.active) { color: var(--text-primary); background: var(--bg-input); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .card { background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(245,166,35,0.04); }
+    .card h2 { font-family: 'Orbitron', sans-serif; font-size: 15px; margin-bottom: 16px; color: var(--accent-gold); }
+    .card h3 { font-size: 14px; margin-bottom: 12px; color: var(--text-primary); }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-gold); }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif; cursor: pointer; transition: all 0.2s; border: none;
+    }
+    .btn-gold { background: linear-gradient(135deg, var(--accent-gold), #e0941a); color: #000; }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    .btn-outline:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .btn-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid rgba(239,68,68,0.3); }
+    .btn-red:hover { background: rgba(239,68,68,0.25); }
+    .btn-green { background: rgba(34,197,94,0.15); color: var(--accent-green); border: 1px solid rgba(34,197,94,0.3); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+      border-radius: 20px; font-size: 12px; font-weight: 600;
+    }
+    .status-active { background: rgba(34,197,94,0.15); color: var(--accent-green); }
+    .status-inactive { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-card .val { font-family: 'Orbitron', sans-serif; font-size: 24px; color: var(--accent-gold); font-weight: 700; }
+    .stat-card .lbl { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+    .task-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px;
+      background: var(--bg-input); transition: border-color 0.2s;
+    }
+    .task-item:hover { border-color: var(--border-gold); }
+    .task-item .task-info { flex: 1; }
+    .task-item .task-label { font-size: 14px; font-weight: 500; }
+    .task-item .task-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .task-item .task-actions { display: flex; gap: 6px; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+    tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    tbody tr:hover { background: var(--bg-input); }
+
+    .search-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+    .search-bar input { flex: 1; }
+
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+    .pagination button { width: 36px; height: 36px; border-radius: 8px; }
+
+    .banner-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border); }
+    .file-upload { position: relative; }
+    .file-upload input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; top: 0; left: 0; }
+
+    .toggle { position: relative; width: 48px; height: 26px; cursor: pointer; }
+    .toggle input { display: none; }
+    .toggle .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 13px; transition: 0.3s; }
+    .toggle .slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+    .toggle input:checked + .slider { background: var(--accent-gold); }
+    .toggle input:checked + .slider:before { transform: translateX(22px); }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      z-index: 999; opacity: 0; transition: opacity 0.3s;
+      background: var(--accent-gold); color: #000;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--accent-red); color: #fff; }
+
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 12px; padding: 24px; width: 90%; max-width: 480px; }
+    .modal h3 { font-family: 'Orbitron', sans-serif; font-size: 15px; color: var(--accent-gold); margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .admin-container { padding: 16px 12px 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>TORD ADMIN</h1>
+    <p>Airdrop Campaign Management</p>
+    <div class="form-group">
+      <input type="password" id="adminPassword" placeholder="Enter admin password" onkeypress="if(event.key==='Enter')adminLogin()" />
+    </div>
+    <button class="btn btn-gold" style="width:100%" onclick="adminLogin()">Login</button>
+  </div>
+</div>
+
+<div class="admin-panel" id="adminPanel">
+  <nav class="admin-nav">
+    <h1>TORD ADMIN</h1>
+    <div class="nav-actions">
+      <a href="/airdrop.html" target="_blank" class="btn btn-outline btn-sm">View Airdrop</a>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-container">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="val" id="statParticipants">0</div><div class="lbl">Participants</div></div>
+      <div class="stat-card"><div class="val" id="statMaxWinners">200</div><div class="lbl">Max Winners</div></div>
+      <div class="stat-card">
+        <div class="val" id="statStatus">--</div><div class="lbl">Campaign Status</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <button class="btn btn-gold" onclick="openNewCampaignModal()">+ New Campaign</button>
+      <button class="btn btn-red" onclick="clearParticipants()">Clear All Participants</button>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('settings')">Settings</div>
+      <div class="tab" onclick="switchTab('tasks')">Tasks</div>
+      <div class="tab" onclick="switchTab('participants')">Participants</div>
+      <div class="tab" onclick="switchTab('history')">History</div>
+    </div>
+
+    <div class="tab-content active" id="tab-settings">
+      <div class="card">
+        <h2>Campaign Settings</h2>
+
+        <div class="form-group">
+          <label>Campaign Status</label>
+          <input type="hidden" id="campaignActive" value="false" />
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <button id="btnStartCampaign" onclick="setCampaignStatus(true)" style="padding:10px 28px;border-radius:8px;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif;cursor:pointer;border:none;background:#22c55e;color:#fff;letter-spacing:0.5px;">START CAMPAIGN</button>
+            <button id="btnStopCampaign" onclick="setCampaignStatus(false)" style="padding:10px 28px;border-radius:8px;font-weight:700;font-size:14px;font-family:'Space Grotesk',sans-serif;cursor:pointer;border:none;background:#ef4444;color:#fff;letter-spacing:0.5px;">STOP CAMPAIGN</button>
+            <span class="status-badge" id="statusBadge">--</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="campTitle" placeholder="Campaign title" />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="campDesc" placeholder="Campaign description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Total Prize</label>
+          <input type="text" id="campPrize" placeholder="e.g. 10,000,000 $TORD" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Max Winners</label>
+            <input type="number" id="campMaxWinners" placeholder="200" />
+          </div>
+          <div class="form-group">
+            <label>Reward Per User</label>
+            <input type="number" id="campReward" placeholder="50000" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="datetime-local" id="campStart" />
+          </div>
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="datetime-local" id="campEnd" />
+          </div>
+        </div>
+
+        <button class="btn btn-gold" onclick="updateCampaign()">Save Settings</button>
+      </div>
+
+      <div class="card">
+        <h2>Banner Image</h2>
+        <img id="bannerPreview" class="banner-preview" src="/airdrop-banner.png" alt="Banner" />
+        <div class="file-upload">
+          <button class="btn btn-outline" style="width:100%;position:relative;">
+            Choose New Banner
+            <input type="file" accept="image/*" onchange="uploadBanner(event)" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-tasks">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="margin-bottom:0;">Tasks</h2>
+          <button class="btn btn-gold btn-sm" onclick="openAddTask()">+ Add Task</button>
+        </div>
+        <div id="tasksList"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-participants">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h2 style="margin-bottom:0;">Participants</h2>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search by username or wallet..." onkeypress="if(event.key==='Enter')loadParticipants(1)" />
+          <button class="btn btn-gold btn-sm" onclick="loadParticipants(1)">Search</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>X Username</th>
+                <th>Wallet</th>
+                <th>IP</th>
+                <th>Tasks</th>
+                <th>Reward</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="participantsBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-history">
+      <div class="card">
+        <h2>Campaign History</h2>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">All past and current campaigns. You can restore any ended campaign to make it active again.</p>
+        <div id="historyList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <h3 id="taskModalTitle">Add Task</h3>
+    <input type="hidden" id="editTaskId" />
+    <div class="form-group">
+      <label>Task Key (unique identifier)</label>
+      <input type="text" id="taskKey" placeholder="e.g. follow, tweet, telegram" />
+    </div>
+    <div class="form-group">
+      <label>Label</label>
+      <input type="text" id="taskLabel" placeholder="e.g. Follow @torddefi on X" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Points</label>
+        <input type="number" id="taskPoints" value="10" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="taskType">
+          <option value="action">Action</option>
+          <option value="wallet">Wallet</option>
+          <option value="bonus">Bonus</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Action URL</label>
+      <input type="text" id="taskUrl" placeholder="https://..." />
+    </div>
+    <div class="form-group">
+      <label>Button Text</label>
+      <input type="text" id="taskButton" placeholder="e.g. Follow @torddefi" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Icon Type</label>
+        <select id="taskIcon">
+          <option value="wallet">Wallet</option>
+          <option value="x">X / Twitter</option>
+          <option value="telegram">Telegram</option>
+          <option value="bonus">Bonus Star</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Sort Order</label>
+        <input type="number" id="taskOrder" value="0" />
+      </div>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+      <label class="toggle" style="flex-shrink:0;">
+        <input type="checkbox" id="taskLocked">
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:13px;color:var(--text-secondary);">Locked (requires other tasks first)</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeTaskModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="newCampaignModal">
+  <div class="modal">
+    <h3>Start New Campaign</h3>
+    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">This will end the current campaign and create a fresh one. All current participants stay in the old campaign records.</p>
+    <div class="form-group">
+      <label>Campaign Title</label>
+      <input type="text" id="newCampTitle" placeholder="TordLabs Airdrop — 200 Winners" />
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="newCampDesc" placeholder="Earn free $TORD tokens by completing simple tasks below."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Total Prize</label>
+      <input type="text" id="newCampPrize" placeholder="10,000,000 $TORD" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Max Winners</label>
+        <input type="number" id="newCampWinners" value="200" />
+      </div>
+      <div class="form-group">
+        <label>Reward Per User</label>
+        <input type="number" id="newCampReward" value="50000" />
+      </div>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+      <label class="toggle" style="flex-shrink:0;">
+        <input type="checkbox" id="keepTasks" checked>
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:13px;color:var(--text-secondary);">Copy tasks from current campaign</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeNewCampaignModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="createNewCampaign()">Create New Campaign</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let authToken = null;
+  let campaignData = null;
+  let currentPage = 1;
+
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  async function api(url, options = {}) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+    const res = await fetch(url, { ...options, headers });
+    return res.json();
+  }
+
+  async function adminLogin() {
+    const pw = document.getElementById('adminPassword').value;
+    if (!pw) return;
+    const res = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ password: pw }) });
+    if (res.success) {
+      authToken = res.token;
+      localStorage.setItem('tordAirdropToken', authToken);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadDashboard();
+    } else {
+      showToast('Wrong password', true);
+    }
+  }
+
+  function logout() {
+    authToken = null;
+    localStorage.removeItem('tordAirdropToken');
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+
+    if (tab === 'participants') loadParticipants(1);
+    if (tab === 'tasks') loadTasks();
+    if (tab === 'history') loadHistory();
+  }
+
+  async function loadDashboard() {
+    let pub;
+    try {
+      const resp = await fetch('/api/campaign');
+      if (!resp.ok) { showToast('API error: ' + resp.status + ' ' + resp.statusText, true); return; }
+      pub = await resp.json();
+    } catch(e) {
+      showToast('Cannot connect to API: ' + e.message, true);
+      return;
+    }
+    if (!pub.campaign) { showToast('No campaign found. Create one with "+ New Campaign" button.', true); return; }
+
+    campaignData = pub.campaign;
+
+    document.getElementById('statParticipants').textContent = pub.participantCount || 0;
+    document.getElementById('statMaxWinners').textContent = campaignData.max_winners;
+
+    const isActive = campaignData.is_active;
+    document.getElementById('statStatus').textContent = isActive ? 'ACTIVE' : 'STOPPED';
+    document.getElementById('statStatus').style.color = isActive ? 'var(--accent-green)' : 'var(--accent-red)';
+
+    document.getElementById('campaignActive').value = isActive ? 'true' : 'false';
+    updateStatusBadge(isActive);
+    updateStartStopButtons(isActive);
+
+    document.getElementById('campTitle').value = campaignData.title || '';
+    document.getElementById('campDesc').value = campaignData.description || '';
+    document.getElementById('campPrize').value = campaignData.total_prize || '';
+    document.getElementById('campMaxWinners').value = campaignData.max_winners || 200;
+    document.getElementById('campReward').value = campaignData.reward_per_user || 50000;
+
+    if (campaignData.start_date) document.getElementById('campStart').value = new Date(campaignData.start_date).toISOString().slice(0, 16);
+    if (campaignData.end_date) document.getElementById('campEnd').value = new Date(campaignData.end_date).toISOString().slice(0, 16);
+    if (campaignData.banner_url) document.getElementById('bannerPreview').src = campaignData.banner_url;
+
+    loadTasks();
+  }
+
+  function updateStatusBadge(active) {
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = active ? 'Active' : 'Inactive';
+    badge.className = 'status-badge ' + (active ? 'status-active' : 'status-inactive');
+  }
+
+  function updateStartStopButtons(active) {
+    const startBtn = document.getElementById('btnStartCampaign');
+    const stopBtn = document.getElementById('btnStopCampaign');
+    if (active) {
+      startBtn.style.opacity = '0.4';
+      startBtn.style.cursor = 'default';
+      stopBtn.style.opacity = '1';
+      stopBtn.style.cursor = 'pointer';
+    } else {
+      startBtn.style.opacity = '1';
+      startBtn.style.cursor = 'pointer';
+      stopBtn.style.opacity = '0.4';
+      stopBtn.style.cursor = 'default';
+    }
+  }
+
+  async function setCampaignStatus(active) {
+    if (!campaignData) { showToast('No campaign loaded', true); return; }
+    document.getElementById('campaignActive').value = active ? 'true' : 'false';
+    const res = await api('/api/admin/campaign/' + campaignData.id, {
+      method: 'PUT',
+      body: JSON.stringify({ is_active: active })
+    });
+    if (res.success) {
+      campaignData.is_active = active;
+      updateStatusBadge(active);
+      updateStartStopButtons(active);
+      document.getElementById('statStatus').textContent = active ? 'ACTIVE' : 'STOPPED';
+      document.getElementById('statStatus').style.color = active ? 'var(--accent-green)' : 'var(--accent-red)';
+      showToast(active ? 'Campaign started!' : 'Campaign stopped!');
+    } else {
+      showToast('Failed to update status', true);
+    }
+  }
+
+  async function updateCampaign() {
+    if (!campaignData) return;
+    const data = {
+      title: document.getElementById('campTitle').value,
+      description: document.getElementById('campDesc').value,
+      total_prize: document.getElementById('campPrize').value,
+      max_winners: parseInt(document.getElementById('campMaxWinners').value) || 200,
+      reward_per_user: parseInt(document.getElementById('campReward').value) || 50000,
+      is_active: document.getElementById('campaignActive').value === 'true',
+      start_date: document.getElementById('campStart').value ? new Date(document.getElementById('campStart').value).toISOString() : null,
+      end_date: document.getElementById('campEnd').value ? new Date(document.getElementById('campEnd').value).toISOString() : null
+    };
+
+    const res = await api('/api/admin/campaign/' + campaignData.id, { method: 'PUT', body: JSON.stringify(data) });
+    if (res.success) {
+      showToast('Campaign updated!');
+      updateStatusBadge(data.is_active);
+      updateStartStopButtons(data.is_active);
+      const isActive = data.is_active;
+      document.getElementById('statStatus').textContent = isActive ? 'ACTIVE' : 'STOPPED';
+      document.getElementById('statStatus').style.color = isActive ? 'var(--accent-green)' : 'var(--accent-red)';
+    } else {
+      showToast('Update failed', true);
+    }
+  }
+
+  async function uploadBanner(e) {
+    const file = e.target.files[0];
+    if (!file || !campaignData) return;
+    if (file.size > 20 * 1024 * 1024) { alert('File exceeds 20MB limit.'); return; }
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+      const res = await api('/api/admin/banner-upload', {
+        method: 'POST',
+        body: JSON.stringify({ image: ev.target.result, filename: file.name, campaign_id: campaignData.id })
+      });
+      if (res.success) {
+        document.getElementById('bannerPreview').src = res.url + '?t=' + Date.now();
+        showToast('Banner updated!');
+      } else {
+        showToast('Upload failed', true);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function loadTasks() {
+    if (!campaignData) return;
+    const res = await api('/api/admin/tasks/' + campaignData.id);
+    const container = document.getElementById('tasksList');
+    if (!res.tasks || res.tasks.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">No tasks configured.</p>';
+      return;
+    }
+
+    container.innerHTML = res.tasks.map(t => `
+      <div class="task-item">
+        <div class="task-info">
+          <div class="task-label">${t.label}</div>
+          <div class="task-meta">${t.task_key} &bull; ${t.points * 1000} $TORD &bull; ${t.is_locked ? 'Locked' : 'Open'} &bull; ${t.is_active ? 'Active' : 'Inactive'}</div>
+        </div>
+        <div class="task-actions">
+          <button class="btn btn-outline btn-sm" onclick="editTask(${t.id})">Edit</button>
+          <button class="btn btn-red btn-sm" onclick="deleteTask(${t.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    window._tasks = res.tasks;
+  }
+
+  function openAddTask() {
+    document.getElementById('taskModalTitle').textContent = 'Add Task';
+    document.getElementById('editTaskId').value = '';
+    document.getElementById('taskKey').value = '';
+    document.getElementById('taskKey').disabled = false;
+    document.getElementById('taskLabel').value = '';
+    document.getElementById('taskPoints').value = '10';
+    document.getElementById('taskType').value = 'action';
+    document.getElementById('taskUrl').value = '';
+    document.getElementById('taskButton').value = '';
+    document.getElementById('taskIcon').value = 'wallet';
+    document.getElementById('taskOrder').value = '0';
+    document.getElementById('taskLocked').checked = false;
+    document.getElementById('taskModal').classList.add('active');
+  }
+
+  function editTask(id) {
+    const t = window._tasks.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('taskModalTitle').textContent = 'Edit Task';
+    document.getElementById('editTaskId').value = t.id;
+    document.getElementById('taskKey').value = t.task_key;
+    document.getElementById('taskKey').disabled = true;
+    document.getElementById('taskLabel').value = t.label;
+    document.getElementById('taskPoints').value = t.points;
+    document.getElementById('taskType').value = t.task_type;
+    document.getElementById('taskUrl').value = t.action_url || '';
+    document.getElementById('taskButton').value = t.button_text || '';
+    document.getElementById('taskIcon').value = t.icon_type || 'wallet';
+    document.getElementById('taskOrder').value = t.sort_order;
+    document.getElementById('taskLocked').checked = t.is_locked;
+    document.getElementById('taskModal').classList.add('active');
+  }
+
+  function closeTaskModal() {
+    document.getElementById('taskModal').classList.remove('active');
+  }
+
+  async function saveTask() {
+    const editId = document.getElementById('editTaskId').value;
+    const data = {
+      campaign_id: campaignData.id,
+      task_key: document.getElementById('taskKey').value,
+      label: document.getElementById('taskLabel').value,
+      points: parseInt(document.getElementById('taskPoints').value) || 10,
+      task_type: document.getElementById('taskType').value,
+      action_url: document.getElementById('taskUrl').value || null,
+      button_text: document.getElementById('taskButton').value || null,
+      icon_type: document.getElementById('taskIcon').value,
+      sort_order: parseInt(document.getElementById('taskOrder').value) || 0,
+      is_locked: document.getElementById('taskLocked').checked
+    };
+
+    if (!data.task_key || !data.label) { showToast('Key and label are required', true); return; }
+
+    let res;
+    if (editId) {
+      res = await api('/api/admin/task/' + editId, { method: 'PUT', body: JSON.stringify(data) });
+    } else {
+      res = await api('/api/admin/task', { method: 'POST', body: JSON.stringify(data) });
+    }
+
+    if (res.success) {
+      showToast(editId ? 'Task updated!' : 'Task added!');
+      closeTaskModal();
+      loadTasks();
+    } else {
+      showToast('Save failed', true);
+    }
+  }
+
+  async function deleteTask(id) {
+    if (!confirm('Delete this task?')) return;
+    const res = await api('/api/admin/task/' + id, { method: 'DELETE' });
+    if (res.success) {
+      showToast('Task deleted');
+      loadTasks();
+    }
+  }
+
+  async function loadParticipants(page) {
+    if (!campaignData) return;
+    currentPage = page || 1;
+    const search = document.getElementById('searchInput').value;
+    const url = '/api/admin/participants/' + campaignData.id + '?page=' + currentPage + '&limit=20' + (search ? '&search=' + encodeURIComponent(search) : '');
+    const res = await api(url);
+
+    const tbody = document.getElementById('participantsBody');
+    if (!res.participants || res.participants.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-secondary);padding:20px;">No participants yet.</td></tr>';
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    tbody.innerHTML = res.participants.map(p => {
+      const tasks = p.tasks_completed || {};
+      const completedTasks = Object.keys(tasks).filter(k => tasks[k]?.completed).length;
+      const date = new Date(p.created_at).toLocaleDateString();
+      return `<tr>
+        <td>@${p.x_username}</td>
+        <td style="font-size:11px;word-break:break-all;max-width:120px;">${p.wallet_address || '-'}</td>
+        <td style="font-size:11px;">${p.ip_address || '-'}</td>
+        <td>${completedTasks} tasks</td>
+        <td style="color:var(--accent-gold);">${(p.total_reward || 0).toLocaleString()}</td>
+        <td style="font-size:12px;">${date}</td>
+      </tr>`;
+    }).join('');
+
+    let paginationHTML = '';
+    for (let i = 1; i <= res.totalPages; i++) {
+      paginationHTML += `<button class="btn ${i === currentPage ? 'btn-gold' : 'btn-outline'} btn-sm" onclick="loadParticipants(${i})">${i}</button>`;
+    }
+    document.getElementById('pagination').innerHTML = paginationHTML;
+  }
+
+  function exportCSV() {
+    if (!campaignData) return;
+    window.open('/api/admin/participants/' + campaignData.id + '/export?token=' + authToken, '_blank');
+  }
+
+  async function loadHistory() {
+    const res = await api('/api/admin/campaign');
+    const container = document.getElementById('historyList');
+    if (!res.campaigns || res.campaigns.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">No campaigns yet.</p>';
+      return;
+    }
+
+    container.innerHTML = res.campaigns.map(c => {
+      const isActive = c.is_active;
+      const created = new Date(c.created_at).toLocaleDateString();
+      const endDate = c.end_date ? new Date(c.end_date).toLocaleDateString() : 'No end date';
+      const participants = c.participant_count || 0;
+
+      return `
+        <div style="border:1px solid ${isActive ? 'var(--accent-gold)' : 'var(--border)'};border-radius:10px;padding:16px;margin-bottom:12px;background:${isActive ? 'rgba(245,166,35,0.05)' : 'var(--bg-input)'};">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <div style="font-weight:600;font-size:14px;">${c.title || 'Untitled Campaign'}</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">ID: ${c.id} &bull; Created: ${created} &bull; Ends: ${endDate}</div>
+            </div>
+            <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">${isActive ? 'Active' : 'Ended'}</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
+            <span>Prize: <strong style="color:var(--accent-gold);">${c.total_prize || '-'}</strong></span>
+            <span>Winners: <strong>${c.max_winners}</strong></span>
+            <span>Participants: <strong>${participants}</strong></span>
+            <span>Reward: <strong>${(c.reward_per_user || 0).toLocaleString()} $TORD</strong></span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            ${!isActive ? '<button class="btn btn-gold btn-sm" onclick="restoreCampaign(' + c.id + ')">Restore & Activate</button>' : '<span style="font-size:12px;color:var(--accent-green);font-weight:600;padding:6px 0;">Currently Active</span>'}
+            <button class="btn btn-outline btn-sm" onclick="viewCampaignParticipants(${c.id}, \'${(c.title || '').replace(/'/g, "\\'")}\')">${participants} Participants</button>
+            <button class="btn btn-outline btn-sm" onclick="exportCampaignCSV(${c.id})">Export CSV</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function restoreCampaign(id) {
+    if (!confirm('This will deactivate the current campaign and restore campaign #' + id + ' as the active campaign. Continue?')) return;
+
+    const res = await api('/api/admin/campaign/' + id + '/restore', { method: 'POST' });
+    if (res.success) {
+      showToast('Campaign restored and activated!');
+      loadDashboard();
+      loadHistory();
+    } else {
+      showToast('Failed to restore campaign', true);
+    }
+  }
+
+  function viewCampaignParticipants(campId, title) {
+    const origCampaignId = campaignData ? campaignData.id : null;
+    campaignData = { id: campId, title: title };
+    switchTabDirect('participants');
+    loadParticipants(1);
+    if (origCampaignId && origCampaignId !== campId) {
+      showToast('Viewing participants for: ' + title);
+    }
+  }
+
+  function switchTabDirect(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t.textContent.toLowerCase() === tab) t.classList.add('active');
+    });
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  function exportCampaignCSV(campId) {
+    window.open('/api/admin/participants/' + campId + '/export?token=' + authToken, '_blank');
+  }
+
+  function openNewCampaignModal() {
+    document.getElementById('newCampTitle').value = '';
+    document.getElementById('newCampDesc').value = '';
+    document.getElementById('newCampPrize').value = '';
+    document.getElementById('newCampWinners').value = '200';
+    document.getElementById('newCampReward').value = '50000';
+    document.getElementById('keepTasks').checked = true;
+    document.getElementById('newCampaignModal').classList.add('active');
+  }
+
+  function closeNewCampaignModal() {
+    document.getElementById('newCampaignModal').classList.remove('active');
+  }
+
+  async function createNewCampaign() {
+    if (!confirm('This will end the current campaign and start a fresh one. Current participant data will be preserved in the old campaign. Continue?')) return;
+
+    const data = {
+      title: document.getElementById('newCampTitle').value || undefined,
+      description: document.getElementById('newCampDesc').value || undefined,
+      total_prize: document.getElementById('newCampPrize').value || undefined,
+      max_winners: parseInt(document.getElementById('newCampWinners').value) || 200,
+      reward_per_user: parseInt(document.getElementById('newCampReward').value) || 50000,
+      keep_tasks: document.getElementById('keepTasks').checked
+    };
+
+    const res = await api('/api/admin/campaign/new', { method: 'POST', body: JSON.stringify(data) });
+    if (res.success) {
+      showToast('New campaign created!');
+      closeNewCampaignModal();
+      loadDashboard();
+    } else {
+      showToast('Failed to create campaign', true);
+    }
+  }
+
+  async function clearParticipants() {
+    if (!campaignData) return;
+    if (!confirm('This will permanently delete ALL participants from the current campaign. This cannot be undone. Are you sure?')) return;
+    if (!confirm('Final confirmation: Delete all ' + (document.getElementById('statParticipants').textContent || '0') + ' participants?')) return;
+
+    const res = await api('/api/admin/participants/' + campaignData.id + '/clear', { method: 'DELETE' });
+    if (res.success) {
+      showToast('All participants cleared!');
+      loadDashboard();
+    } else {
+      showToast('Failed to clear participants', true);
+    }
+  }
+
+  (function init() {
+    const saved = localStorage.getItem('tordAirdropToken');
+    if (saved) {
+      authToken = saved;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      loadDashboard();
+    }
+  })();
+</script>
+</body>
+</html>

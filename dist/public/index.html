@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+    <meta property="og:title" content="Tord Labs | The Future of DeFi" />
+    <meta property="og:description" content="AI-Powered Yield Aggregation and Crypto Trading Protocol." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://d00feeb2-b6c9-4aee-b0b2-c40cdaf3ace8-00-2koi1hlx8uw9b.pike.your-domain.com/opengraph.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@torddefi" />
+    <meta name="twitter:title" content="Tord Labs | The Future of DeFi" />
+    <meta name="twitter:description" content="AI-Powered Yield Aggregation and Crypto Trading Protocol." />
+    <meta name="twitter:image" content="https://d00feeb2-b6c9-4aee-b0b2-c40cdaf3ace8-00-2koi1hlx8uw9b.pike.your-domain.com/opengraph.jpg" />
+
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-BO6UIVYb.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C8AOW-SG.css">
+  </head>
+  <body style="background-color: #0a0a0a; margin: 0;">
+    <div id="root"></div>
+    <script>
+      (function addTordAIButton() {
+        function inject() {
+          const sections = document.querySelectorAll('section, div[class*="section"], div[class*="api"], div[class*="free"]');
+          let freeApiSection = null;
+          document.querySelectorAll('h1, h2, h3, h4').forEach(h => {
+            if (h.textContent && /free\s*api/i.test(h.textContent)) {
+              freeApiSection = h.closest('section') || h.closest('div');
+            }
+          });
+
+          if (!freeApiSection) {
+            const allText = document.querySelectorAll('span, p, h1, h2, h3, h4, h5, h6, div');
+            for (const el of allText) {
+              if (el.childElementCount < 3 && el.textContent && /Tord\s+Free\s+API/i.test(el.textContent.trim())) {
+                freeApiSection = el.closest('section') || el.parentElement?.parentElement?.parentElement;
+                break;
+              }
+            }
+          }
+
+          if (freeApiSection && !document.getElementById('tordai-btn-injected')) {
+            const wrapper = document.createElement('div');
+            wrapper.id = 'tordai-btn-injected';
+            wrapper.style.cssText = 'display:flex;justify-content:center;padding:24px 0 12px;';
+            wrapper.innerHTML = '<a href="/tordai" style="display:inline-flex;align-items:center;gap:10px;padding:14px 32px;background:linear-gradient(135deg,#f5a623,#e0941a);color:#000;font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 20px rgba(245,166,35,0.3);" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 6px 28px rgba(245,166,35,0.4)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 4px 20px rgba(245,166,35,0.3)\'"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5c0 2-1.5 3.5-3 4.5V13a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2v-1.5C8.5 10.5 7 9 7 7a5 5 0 0 1 5-5z"/><path d="M10 15v2a2 2 0 0 0 4 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>Try Tord Powerful AI</a>';
+            freeApiSection.appendChild(wrapper);
+          }
+        }
+
+        let attempts = 0;
+        const interval = setInterval(() => {
+          inject();
+          attempts++;
+          if (document.getElementById('tordai-btn-injected') || attempts > 40) clearInterval(interval);
+        }, 500);
+      })();
+    </script>
+    <script>
+      (function replaceWhitepaperBtn() {
+        function inject() {
+          var btns = document.querySelectorAll('a, button');
+          for (var i = 0; i < btns.length; i++) {
+            var txt = btns[i].textContent.trim();
+            if (/read\s*whitepaper/i.test(txt) && !btns[i].dataset.tordReplaced && !btns[i].dataset.whitepaperBtn && !btns[i].closest('#whitepaper-section-injected')) {
+              var el = btns[i];
+              el.dataset.tordReplaced = '1';
+              if (!document.getElementById('neon-snake-style')) {
+                var ss = document.createElement('style');
+                ss.id = 'neon-snake-style';
+                ss.textContent = '@keyframes neonSnake{0%{background-position:0% 0%}100%{background-position:200% 0%}}@keyframes neonPulse{0%,100%{box-shadow:0 0 8px rgba(212,175,55,0.4),0 0 20px rgba(212,175,55,0.15)}50%{box-shadow:0 0 16px rgba(212,175,55,0.7),0 0 40px rgba(212,175,55,0.3)}}';
+                document.head.appendChild(ss);
+              }
+              var wrap = document.createElement('div');
+              var launchBtn = null;
+              var heroSiblings = el.parentNode ? el.parentNode.querySelectorAll('a, button') : [];
+              for (var s = 0; s < heroSiblings.length; s++) { if (/launch\s*app/i.test(heroSiblings[s].textContent)) { launchBtn = heroSiblings[s]; break; } }
+              var btnH = launchBtn ? launchBtn.offsetHeight : 52;
+              wrap.style.cssText = 'position:relative;display:inline-flex;padding:2px;border-radius:12px;background:linear-gradient(90deg,#d4af37,#fff700,#d4af37,#fff700,#d4af37);background-size:200% 100%;animation:neonSnake 2s linear infinite;box-shadow:0 0 8px rgba(212,175,55,0.4),0 0 20px rgba(212,175,55,0.15);height:' + btnH + 'px;box-sizing:border-box;';
+              var inner = document.createElement('div');
+              inner.style.cssText = 'display:inline-flex;align-items:center;gap:8px;height:100%;padding:0 30px;border-radius:10px;background:#0a0a0a;cursor:pointer;white-space:nowrap;box-sizing:border-box;overflow:visible;';
+              inner.innerHTML = '<video src="/tordai-icon.webm" autoplay loop muted playsinline style="width:38px;height:38px;object-fit:contain;pointer-events:none;margin:-10px 0"></video><span style="color:#fff;font-family:Orbitron,sans-serif;font-size:16px;font-weight:600;letter-spacing:0.5px">Tord AI</span>';
+              wrap.appendChild(inner);
+              el.parentNode.replaceChild(wrap, el);
+              wrap.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                window.location.href = '/tordai';
+              }, true);
+              wrap.addEventListener('mouseenter', function(){ this.style.boxShadow='0 0 12px rgba(212,175,55,0.6),0 0 30px rgba(212,175,55,0.25)'; });
+              wrap.addEventListener('mouseleave', function(){ this.style.boxShadow='0 0 8px rgba(212,175,55,0.4),0 0 20px rgba(212,175,55,0.15)'; });
+              return true;
+            }
+          }
+          return false;
+        }
+        var a = 0;
+        var iv = setInterval(function() { inject(); if (++a > 60) clearInterval(iv); }, 500);
+      })();
+    </script>
+    <script>
+      (function addWhitepaperSection() {
+        function inject() {
+          if (document.getElementById('whitepaper-section-injected')) return true;
+          var roadmapEl = null;
+          document.querySelectorAll('h1, h2, h3, h4, span').forEach(function(h) {
+            if (h.textContent && /^\s*Roadmap\s*$/i.test(h.textContent.trim())) {
+              roadmapEl = h.closest('section') || h.closest('div[class]');
+            }
+          });
+          if (!roadmapEl) return false;
+          var section = document.createElement('section');
+          section.id = 'whitepaper-section-injected';
+          section.style.cssText = 'position:relative;padding:80px 24px;text-align:center;overflow:hidden;background:linear-gradient(180deg,rgba(10,10,10,1) 0%,rgba(20,16,8,1) 50%,rgba(10,10,10,1) 100%);';
+          section.innerHTML = '' +
+            '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(245,166,35,0.06) 0%,transparent 70%);pointer-events:none"></div>' +
+            '<div style="max-width:720px;margin:0 auto;position:relative;z-index:1">' +
+              '<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:6px 16px;margin-bottom:24px">' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' +
+                '<span style="color:#f5a623;font-family:Space Grotesk,sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Documentation</span>' +
+              '</div>' +
+              '<h2 style="font-family:Orbitron,sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;margin:0 0 16px;letter-spacing:1px">Whitepaper</h2>' +
+              '<p style="font-family:Space Grotesk,sans-serif;font-size:16px;color:rgba(255,255,255,0.5);line-height:1.7;margin:0 0 40px;max-width:560px;margin-left:auto;margin-right:auto">Dive deep into the technology, tokenomics, and vision behind Tord Labs. Our whitepaper covers the full architecture of our AI-powered DeFi protocol.</p>' +
+              '<a href="/whitepaper" data-tord-replaced="1" data-whitepaper-btn="1" style="display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:linear-gradient(135deg,#f5a623,#e0941a);color:#000;font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;border-radius:12px;text-decoration:none;transition:all 0.3s;box-shadow:0 4px 24px rgba(245,166,35,0.3)" onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 8px 32px rgba(245,166,35,0.45)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 4px 24px rgba(245,166,35,0.3)\'">' +
+                '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' +
+                'Read Whitepaper</a>' +
+            '</div>';
+          roadmapEl.parentNode.insertBefore(section, roadmapEl.nextSibling);
+          return true;
+        }
+        var attempts = 0;
+        var iv = setInterval(function() {
+          var done = inject();
+          attempts++;
+          if (done || attempts > 40) clearInterval(iv);
+        }, 500);
+      })();
+    </script>
+    <script>
+      (function addTordPerpsSection() {
+        function inject() {
+          if (document.getElementById('tord-perps-section')) return true;
+          var agentEl = null;
+          document.querySelectorAll('h1, h2, h3, h4, span, p').forEach(function(h) {
+            if (h.textContent && /send\s*your\s*ai\s*agent/i.test(h.textContent.trim())) {
+              agentEl = h.closest('section') || h.closest('div[class]');
+              if (!agentEl) { var p = h; for (var x = 0; x < 8; x++) { p = p.parentElement; if (!p) break; if (p.tagName === 'SECTION' || (p.className && p.className.length > 2)) { agentEl = p; break; } } }
+            }
+          });
+          if (!agentEl) return false;
+          var section = document.createElement('section');
+          section.id = 'tord-perps-section';
+          section.style.cssText = 'position:relative;padding:80px 24px;text-align:center;overflow:hidden;background:linear-gradient(180deg,rgba(10,10,10,1) 0%,rgba(14,12,6,1) 50%,rgba(10,10,10,1) 100%);';
+          section.innerHTML = '' +
+            '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(245,166,35,0.05) 0%,transparent 70%);pointer-events:none"></div>' +
+            '<div style="max-width:720px;margin:0 auto;position:relative;z-index:1">' +
+              '<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:6px 16px;margin-bottom:24px">' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><path d="M2 12h4l3-9 6 18 3-9h4"/></svg>' +
+                '<span style="color:#f5a623;font-family:Space Grotesk,sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Perpetuals</span>' +
+              '</div>' +
+              '<h2 style="font-family:Orbitron,sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;margin:0 0 20px;letter-spacing:1px">$TORD Perps</h2>' +
+              '<img src="/capsule.png" alt="TORD Perps" style="width:280px;height:auto;margin:0 auto 28px;display:block;filter:drop-shadow(0 0 30px rgba(245,166,35,0.3));transition:transform 0.3s ease,filter 0.3s ease;cursor:pointer" onmouseover="this.style.transform=\'scale(1.08)\';this.style.filter=\'drop-shadow(0 0 50px rgba(245,166,35,0.5))\'" onmouseout="this.style.transform=\'scale(1)\';this.style.filter=\'drop-shadow(0 0 30px rgba(245,166,35,0.3))\'">' +
+              '<p style="font-family:Space Grotesk,sans-serif;font-size:17px;color:rgba(255,255,255,0.55);line-height:1.8;margin:0 0 32px;max-width:560px;margin-left:auto;margin-right:auto">Leverage your $TORD. Up to 5x on $TORD.<br>On-chain risk engine. Fully transparent.</p>' +
+              '<div style="display:inline-flex;position:relative;padding:2px;border-radius:12px;background:linear-gradient(90deg,#d4af37,#fff700,#d4af37,#fff700,#d4af37);background-size:200% 100%;animation:neonSnake 2s linear infinite,neonPulse 2s ease-in-out infinite;cursor:pointer" onclick="return false">' +
+                '<span style="position:absolute;top:-10px;right:-10px;background:#e53e3e;color:#fff;font-family:Space Grotesk,sans-serif;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:0.5px;z-index:2;animation:neonPulse 1.5s ease-in-out infinite;box-shadow:0 0 8px rgba(229,62,62,0.5)">SOON</span>' +
+                '<div style="display:inline-flex;align-items:center;gap:10px;padding:14px 36px;border-radius:10px;background:#0a0a0a;white-space:nowrap">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M2 12h4l3-9 6 18 3-9h4"/></svg>' +
+                  '<span style="color:#fff;font-family:Orbitron,sans-serif;font-size:14px;font-weight:700">TORD/BNB</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          agentEl.parentNode.insertBefore(section, agentEl);
+          return true;
+        }
+        var attempts = 0;
+        var iv = setInterval(function() { if (inject() || ++attempts > 40) clearInterval(iv); }, 500);
+      })();
+    </script>
+    <script>
+      (function enhanceWhitepaperAI() {
+        if (!/\/whitepaper/i.test(location.pathname)) return;
+        function inject() {
+          var aiSection = document.getElementById('ai-features');
+          if (!aiSection) return false;
+          if (document.getElementById('tordai-wp-injected')) return true;
+          var container = aiSection.querySelector('.space-y-4') || aiSection;
+          var block = document.createElement('div');
+          block.id = 'tordai-wp-injected';
+          block.style.cssText = 'margin-top:32px;';
+          block.innerHTML = '' +
+            '<div style="margin-bottom:24px">' +
+              '<h3 style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Tord AI Agent</h3>' +
+              '<p style="color:rgba(255,255,255,0.55);line-height:1.7;font-size:15px;margin-bottom:16px">The Tord AI Agent is the core intelligence hub of the Tord Labs ecosystem. Accessible at <a href="/tordai" style="color:#f5a623;text-decoration:underline">/tordai</a>, it provides a unified interface to interact with over 200 AI models through a single, intuitive chat-based interface. The agent auto-detects intent from your message and routes it to the most suitable model and processing pipeline.</p>' +
+            '</div>' +
+
+            '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px">' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">AI Chat</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Multi-turn conversational AI with context memory. Supports natural language questions, crypto research, market analysis, and general knowledge. Automatically selects the optimal model based on query complexity.</p>' +
+              '</div>' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">AI Image Generation</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Text-to-image generation with customizable dimensions, themes, and styles. Supports multiple aspect ratios (1:1, 16:9, 9:16, etc.), creative themes (cyberpunk, anime, photorealistic), and both free and premium generation tiers.</p>' +
+              '</div>' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5c0 2-1.5 3.5-3 4.5V13a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2v-1.5C8.5 10.5 7 9 7 7a5 5 0 0 1 5-5z"/><path d="M10 15v2a2 2 0 0 0 4 0v-2"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">Deep Reasoning</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Advanced reasoning engine for complex analysis, strategic planning, and multi-step problem solving. Designed for tasks that require deep thinking such as token contract auditing, DeFi strategy evaluation, and technical research.</p>' +
+              '</div>' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">Code Analysis</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Upload smart contracts, code files, or paste code snippets for instant AI-powered analysis. Supports Solidity, JavaScript, Python, and more. Detects vulnerabilities, explains logic, and suggests optimizations.</p>' +
+              '</div>' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">File Upload & Analysis</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Drag and drop any file (images, documents, code, data files up to 20MB) directly into the chat. The AI automatically processes and analyzes the content, supporting vision-based image understanding and text extraction.</p>' +
+              '</div>' +
+              '<div style="border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);border-radius:12px;padding:20px">' +
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,0.1);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h4 style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#fff">Token Research</h4></div>' +
+                '<p style="color:rgba(255,255,255,0.5);font-size:13px;line-height:1.6">Deep research mode for any token or project. Analyzes on-chain data, contract security, liquidity depth, holder distribution, and provides comprehensive risk assessments with actionable insights.</p>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="margin-bottom:24px">' +
+              '<h3 style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Free & Premium Tiers</h3>' +
+              '<p style="color:rgba(255,255,255,0.55);line-height:1.7;font-size:15px;margin-bottom:12px">Tord AI operates on a dual-tier access model designed to be accessible to everyone while rewarding $TORD holders with premium capabilities:</p>' +
+              '<ul style="list-style:none;padding:0;margin:0 0 16px">' +
+                '<li style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.8;padding-left:20px;position:relative"><span style="position:absolute;left:0;color:#f5a623">&#9679;</span><strong style="color:#fff">Free Tier</strong> — No wallet connection required. Access to curated free AI models for chat and image generation. Automatic model fallback ensures uninterrupted service.</li>' +
+                '<li style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.8;padding-left:20px;position:relative"><span style="position:absolute;left:0;color:#f5a623">&#9679;</span><strong style="color:#fff">Premium Tier</strong> — Connect your BSC wallet and hold $TORD tokens. $50 worth of $TORD unlocks $1 in daily premium credits, refreshed every 24 hours. Access 200+ premium models with higher quality outputs.</li>' +
+                '<li style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.8;padding-left:20px;position:relative"><span style="position:absolute;left:0;color:#f5a623">&#9679;</span><strong style="color:#fff">Credit Packs</strong> — Purchase one-time credit packs ($9.90 – $49.90) that never expire. Use credits across all premium AI features at your own pace.</li>' +
+                '<li style="color:rgba(255,255,255,0.55);font-size:14px;line-height:1.8;padding-left:20px;position:relative"><span style="position:absolute;left:0;color:#f5a623">&#9679;</span><strong style="color:#fff">Subscriptions</strong> — Monthly or annual plans (Basic $9.90/mo, Standard $19.90/mo, Pro $49.90/mo) with 50% discount on annual billing.</li>' +
+              '</ul>' +
+            '</div>' +
+
+            '<div style="margin-bottom:24px">' +
+              '<h3 style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Smart Intent Detection</h3>' +
+              '<p style="color:rgba(255,255,255,0.55);line-height:1.7;font-size:15px">The Tord AI Agent uses intelligent intent detection to automatically classify user messages and route them to the appropriate processing pipeline. When you type a message, the system identifies whether you need a chat response, image generation, code analysis, or deep reasoning — and selects the optimal model and parameters accordingly. No manual mode switching required.</p>' +
+            '</div>' +
+
+            '<div style="margin-bottom:24px">' +
+              '<h3 style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Badge System</h3>' +
+              '<p style="color:rgba(255,255,255,0.55);line-height:1.7;font-size:15px;margin-bottom:12px">Users are awarded badges based on their engagement and subscription tier. Badges are displayed alongside wallet addresses across the platform, recognizing community members and their level of access:</p>' +
+              '<div style="display:flex;flex-wrap:wrap;gap:10px">' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);font-size:12px;color:rgba(255,255,255,0.6)"><span style="color:#f5a623">&#9733;</span> Holder</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(205,127,50,0.3);background:rgba(205,127,50,0.08);font-size:12px;color:rgba(205,127,50,0.9)"><span>&#127941;</span> Basic</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(192,192,192,0.3);background:rgba(192,192,192,0.08);font-size:12px;color:rgba(192,192,192,0.9)"><span>&#127941;</span> Standard</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(255,215,0,0.3);background:rgba(255,215,0,0.08);font-size:12px;color:rgba(255,215,0,0.9)"><span>&#127941;</span> Pro</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(245,166,35,0.3);background:rgba(245,166,35,0.08);font-size:12px;color:#f5a623"><span>&#127775;</span> Starter</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(168,85,247,0.3);background:rgba(168,85,247,0.08);font-size:12px;color:rgba(168,85,247,0.9)"><span>&#127912;</span> Creator</span>' +
+                '<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(59,130,246,0.3);background:rgba(59,130,246,0.08);font-size:12px;color:rgba(59,130,246,0.9)"><span>&#128142;</span> Professional</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div>' +
+              '<h3 style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:12px">Bilingual Support</h3>' +
+              '<p style="color:rgba(255,255,255,0.55);line-height:1.7;font-size:15px">The entire Tord AI interface supports English and Chinese (Simplified), with one-click language toggle. All UI elements, system messages, model descriptions, and notifications are fully translated to ensure a native experience for both English and Chinese-speaking users.</p>' +
+            '</div>';
+
+          container.appendChild(block);
+          return true;
+        }
+        var a = 0;
+        var iv = setInterval(function() { if (inject() || ++a > 60) clearInterval(iv); }, 500);
+      })();
+    </script>
+    <script>
+    (function(){
+      var dc=0,ov=null;
+      function mkOv(){if(ov)return;ov=document.createElement("div");ov.id="dd-ov";ov.style.cssText="display:none;position:fixed;inset:0;background:rgba(245,166,35,0.08);border:3px dashed #f5a623;z-index:9999;pointer-events:none;align-items:center;justify-content:center;";ov.innerHTML='<div style="background:rgba(0,0,0,0.85);border:2px solid #f5a623;border-radius:16px;padding:32px 48px;text-align:center;box-shadow:0 0 40px rgba(245,166,35,0.3)"><div style="font-size:48px;margin-bottom:12px">&#128206;</div><div style="color:#f5a623;font-family:Orbitron,sans-serif;font-size:18px;font-weight:700">Drop files here</div><div style="color:#888;font-family:Space Grotesk,sans-serif;font-size:13px;margin-top:6px">Any file type up to 20MB</div></div>';document.body.appendChild(ov)}
+      function isAI(){return/\/(admin|tordai)/i.test(location.pathname)}
+      document.addEventListener("dragenter",function(e){if(!isAI())return;e.preventDefault();dc++;if(dc===1){mkOv();ov.style.display="flex"}});
+      document.addEventListener("dragleave",function(e){if(!isAI())return;dc--;if(dc<=0){dc=0;if(ov)ov.style.display="none"}});
+      document.addEventListener("dragover",function(e){if(!isAI())return;e.preventDefault();e.dataTransfer.dropEffect="copy"});
+      document.addEventListener("drop",function(e){if(!isAI())return;e.preventDefault();dc=0;if(ov)ov.style.display="none";var f=e.dataTransfer&&e.dataTransfer.files;if(!f||!f.length)return;var fi=document.querySelector('input[type="file"][accept="*/*"]');if(!fi)fi=document.querySelector('input[type="file"]');if(fi){var dt=new DataTransfer();for(var i=0;i<f.length;i++){if(f[i].size<=20*1024*1024)dt.items.add(f[i])}if(dt.files.length>0){fi.files=dt.files;fi.dispatchEvent(new Event("change",{bubbles:true}))}}});
+    })();
+    </script>
+  </body>
+</html>

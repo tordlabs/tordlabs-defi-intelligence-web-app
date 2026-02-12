@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TORD AI | Tord Labs</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--bg3:#161616;--bg4:#1a1a1a;
+      --border:#1e1e1e;--border-gold:rgba(245,166,35,0.3);
+      --text:#fff;--text2:#a0a0a0;--text3:#666;
+      --gold:#f5a623;--gold-dim:rgba(245,166,35,0.1);
+      --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#a855f7;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;display:flex}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+
+    .sidebar{width:260px;min-width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:fixed;left:0;top:0;z-index:100;transition:transform .3s}
+    .sidebar-top{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .sidebar-top .brand{display:flex;align-items:center;gap:10px}
+    .sidebar-top .brand img{width:28px;height:28px}
+    .sidebar-top .brand h1{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;background:linear-gradient(135deg,var(--gold),#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .sidebar-top .icon-btns{display:flex;gap:4px}
+    .sidebar-top .icon-btns button{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;font-size:16px;border-radius:4px}
+    .sidebar-top .icon-btns button:hover{color:var(--text)}
+    .sidebar-toggle-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .sidebar-toggle-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .sidebar-close-btn{background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .sidebar-close-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .mobile-only{display:none}
+    .desktop-only{display:flex}
+
+    .new-chat-btn{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:10px 12px;padding:10px 14px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+    .new-chat-btn:hover{border-color:var(--gold)}
+
+    .chat-history{flex:1;overflow-y:auto;padding:4px 8px}
+    .history-group-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;padding:12px 8px 4px;font-weight:600}
+    .history-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s;margin-bottom:1px}
+    .history-item:hover{background:var(--bg4);color:var(--text)}
+    .history-item.active{background:var(--gold-dim);color:var(--gold)}
+    .history-item .h-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+    .history-item .h-del{display:none;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 2px}
+    .history-item:hover .h-del{display:block}
+
+    .sidebar-footer{padding:12px 16px;border-top:1px solid var(--border)}
+    .sidebar-footer a{display:flex;align-items:center;gap:10px;color:var(--text2);text-decoration:none;font-size:13px;padding:8px 10px;border-radius:8px;transition:all .2s}
+    .sidebar-footer a:hover{background:var(--bg4);color:var(--gold)}
+
+    .wallet-section{padding:10px 16px;border-top:1px solid var(--border)}
+    .wallet-connect-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--border-gold);background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(245,166,35,0.02));color:var(--gold);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s}
+    .wallet-connect-btn:hover{background:linear-gradient(135deg,rgba(245,166,35,0.18),rgba(245,166,35,0.06));border-color:var(--gold);box-shadow:0 0 16px rgba(245,166,35,0.15)}
+    .wallet-connect-btn svg{flex-shrink:0}
+    .wallet-info{display:flex;flex-direction:column;gap:6px}
+    .wallet-addr-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .wallet-addr{font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+    .wallet-disconnect{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px;border-radius:4px;transition:color .2s}
+    .wallet-disconnect:hover{color:var(--red)}
+    .wallet-balance{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)}
+    .wallet-balance-icon{width:18px;height:18px;border-radius:50%}
+    .wallet-balance-amount{font-size:13px;font-weight:600;color:var(--text);font-family:'Space Grotesk',sans-serif}
+    .wallet-balance-symbol{font-size:11px;color:var(--text3);font-weight:500}
+    .wallet-network{font-size:10px;color:var(--text3);text-align:center;margin-top:2px}
+    .wallet-balance-row{display:flex;align-items:center;gap:4px}
+    .wallet-balance{flex:1}
+    .wallet-refresh{background:none;border:1px solid var(--border);color:var(--text3);cursor:pointer;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .wallet-refresh:hover{border-color:var(--gold);color:var(--gold)}
+    .wallet-refresh.spinning svg{animation:spin .6s linear}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+    .avatar-modal-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)}
+    .avatar-modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:92%}
+    .avatar-modal h3{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;color:var(--gold);text-align:center;margin-bottom:6px}
+    .avatar-modal .subtitle{font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px}
+    .avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+    .avatar-option{width:100%;aspect-ratio:1;border-radius:50%;border:2px solid var(--border);cursor:pointer;transition:all .2s;overflow:hidden;background:var(--bg3);position:relative}
+    .avatar-option:hover{border-color:var(--gold);transform:scale(1.08);box-shadow:0 0 12px rgba(245,166,35,0.25)}
+    .avatar-option.selected{border-color:var(--gold);box-shadow:0 0 16px rgba(245,166,35,0.35)}
+    .avatar-option img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .avatar-confirm-btn{width:100%;padding:10px;border-radius:10px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(245,166,35,0.15),rgba(245,166,35,0.05));color:var(--gold);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s}
+    .avatar-confirm-btn:hover{background:linear-gradient(135deg,rgba(245,166,35,0.25),rgba(245,166,35,0.1));box-shadow:0 0 16px rgba(245,166,35,0.15)}
+    .avatar-confirm-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+    .wallet-avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--border-gold);cursor:pointer;transition:all .2s;object-fit:cover;flex-shrink:0}
+    .wallet-avatar:hover{border-color:var(--gold);box-shadow:0 0 10px rgba(245,166,35,0.2)}
+    .wallet-addr-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+    .main{flex:1;display:flex;flex-direction:column;height:100vh;margin-left:260px}
+
+    .topbar{padding:12px 24px;border-bottom:none;display:flex;align-items:center;gap:16px;background:rgba(10,10,10,.9);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50}
+    .mode-info-wrap{position:sticky;top:49px;z-index:49}
+    .mode-toggle-btn{position:absolute;right:16px;top:4px;width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:51;transition:all .2s}
+    .mode-toggle-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+    .mode-toggle-btn.open{color:var(--gold);border-color:var(--gold)}
+    .mode-toggle-btn svg{transition:transform .2s}
+    .mode-toggle-btn.open svg{transform:rotate(180deg)}
+    .mode-info-bar{padding:6px 24px;border-bottom:1px solid var(--border);background:rgba(15,15,15,.95);display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--text3);backdrop-filter:blur(8px);max-height:0;overflow:hidden;opacity:0;transition:max-height .3s ease,opacity .2s ease,padding .3s ease;padding-top:0;padding-bottom:0;border-bottom:none;flex-wrap:wrap}
+    .mode-info-bar.show{max-height:80px;opacity:1;padding-top:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .mode-info-bar .mode-label{color:var(--text2);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px}
+    .mode-info-bar .mode-name{color:var(--gold);font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mode-info-bar .mode-tag{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+    .mode-info-bar .mode-tag.free{background:rgba(0,200,83,.12);color:#00c853;border:1px solid rgba(0,200,83,.25)}
+    .mode-info-bar .mode-tag.premium{background:rgba(245,166,35,.12);color:var(--gold);border:1px solid rgba(245,166,35,.25)}
+    .mode-info-bar .mode-sep{width:1px;height:14px;background:var(--border);margin:0 2px}
+    .mode-info-bar .mode-ctx{font-size:10px;color:var(--text3)}
+    .mode-info-bar .mode-provider{font-size:10px;color:var(--text3);opacity:.7}
+    .mode-info-bar .mode-tags{display:flex;gap:4px;margin-left:auto}
+    .mode-info-bar .mode-cap{padding:1px 6px;border-radius:6px;font-size:9px;background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+    .topbar .logo-sm{width:36px;height:36px}
+    .topbar h2{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;flex:1}
+    .topbar-avatar{width:36px;height:36px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--bg3);transition:border-color .2s;flex-shrink:0;margin-left:auto}
+    .topbar-avatar:hover{border-color:var(--gold)}
+    .topbar-avatar img{width:100%;height:100%;object-fit:cover}
+    .topbar-avatar svg{color:var(--text3);width:20px;height:20px}
+    .topbar-avatar-wrap{position:relative;display:flex;align-items:center;gap:6px}
+    .profile-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:260px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.6);animation:dropIn .2s ease}
+    @keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    .profile-dropdown .pd-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .profile-dropdown .pd-avatar{width:42px;height:42px;border-radius:10px;overflow:hidden;flex-shrink:0;cursor:pointer;border:2px solid var(--border);transition:border-color .2s}
+    .profile-dropdown .pd-avatar:hover{border-color:var(--gold)}
+    .profile-dropdown .pd-avatar img{width:100%;height:100%;object-fit:cover}
+    .profile-dropdown .pd-avatar svg{width:100%;height:100%;padding:8px;color:var(--text3)}
+    .profile-dropdown .pd-info{flex:1;min-width:0}
+    .profile-dropdown .pd-addr{font-size:12px;color:var(--text);font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .profile-dropdown .pd-label{font-size:10px;color:var(--text3);margin-top:2px}
+    .profile-dropdown .pd-balance{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);margin-bottom:10px}
+    .profile-dropdown .pd-balance-icon{width:20px;height:20px;border-radius:50%}
+    .profile-dropdown .pd-balance-amt{font-size:14px;font-weight:600;color:var(--text);flex:1}
+    .profile-dropdown .pd-balance-sym{font-size:11px;color:var(--text3);font-weight:500}
+    .profile-dropdown .pd-balance-refresh{background:none;border:1px solid var(--border);color:var(--text3);cursor:pointer;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .profile-dropdown .pd-balance-refresh:hover{border-color:var(--gold);color:var(--gold)}
+    .profile-dropdown .pd-balance-refresh.spinning svg{animation:spin .6s linear}
+    .profile-dropdown .pd-actions{display:flex;flex-direction:column;gap:6px}
+    .profile-dropdown .pd-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;background:none;border:1px solid var(--border);color:var(--text2);border-radius:8px;cursor:pointer;font-size:12px;font-family:'Space Grotesk',sans-serif;transition:all .2s}
+    .profile-dropdown .pd-btn:hover{border-color:var(--gold);color:var(--text);background:var(--gold-dim)}
+    .profile-dropdown .pd-btn svg{flex-shrink:0;width:16px;height:16px}
+    .profile-dropdown .pd-btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+    .profile-dropdown .pd-connect{width:100%;padding:10px;background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(245,166,35,0.04));border:1px solid var(--border-gold);color:var(--gold);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:all .2s}
+    .profile-dropdown .pd-connect:hover{background:linear-gradient(135deg,rgba(245,166,35,0.2),rgba(245,166,35,0.08));border-color:var(--gold)}
+    .menu-toggle{display:none;background:none;border:1px solid var(--border);color:var(--text);cursor:pointer;width:34px;height:34px;border-radius:8px;align-items:center;justify-content:center;font-size:16px}
+
+    .chat-area{flex:1;overflow-y:auto;padding:24px}
+
+    .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:auto;text-align:center;padding:0 12px;box-sizing:border-box}
+    .welcome .logo-glow{width:80px;height:80px;margin-bottom:24px;cursor:pointer;transition:transform .3s ease,filter .3s ease}
+    .welcome .logo-glow:hover{transform:scale(1.15);filter:drop-shadow(0 0 16px rgba(245,166,35,.5))}
+    .welcome .logo-glow img{width:80px;height:80px}
+    .welcome .logo-glow video{width:80px;height:80px;object-fit:contain}
+    .welcome h2{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+    .welcome .sub{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+    .welcome .desc{color:var(--text2);font-size:14px;max-width:500px;margin-bottom:60px;line-height:1.6}
+
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:640px;width:100%;padding:0 16px;box-sizing:border-box}
+    .feature-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all .2s;text-align:left;min-height:0}
+    .feature-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 20px rgba(245,166,35,.06)}
+    .feature-card .fc-icon{font-size:18px;margin-bottom:8px}
+    .feature-card h4{font-size:13px;font-weight:600;margin-bottom:6px}
+    .feature-card .fc-tag{display:inline-block;font-size:10px;color:var(--gold);font-weight:600;padding:3px 8px;border:1px solid var(--border-gold);border-radius:4px;margin-bottom:8px}
+    .feature-card .fc-example{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .feature-card .fc-example span{font-size:11px;color:var(--text3);line-height:1.4}
+    .feature-card .copy-btn{background:none;border:1px solid var(--border);color:var(--text3);cursor:pointer;padding:2px 4px;border-radius:4px;font-size:10px;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .feature-card .copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .feature-card .copy-btn.copied{border-color:var(--green);color:var(--green)}
+
+    .messages-box{max-width:800px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+    .message{display:flex;gap:12px;animation:msgIn .25s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .message.user{flex-direction:row-reverse}
+    .msg-avatar{width:52px;height:52px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden}
+    .msg-avatar img{width:100%;height:100%;object-fit:cover}
+    .message.assistant .msg-avatar{background:transparent}
+    .message.user .msg-avatar{background:transparent;color:var(--text2)}
+    .msg-body{max-width:72%}
+    .msg-name{font-size:11px;font-weight:600;margin-bottom:4px;letter-spacing:.5px;font-family:'Orbitron',sans-serif}
+    .message.assistant .msg-name{color:var(--gold)}
+    .message.user .msg-name{color:var(--text2);text-align:right}
+    .msg-content{padding:14px 18px;border-radius:14px;font-size:14px;line-height:1.7;word-wrap:break-word;overflow-wrap:break-word}
+    .message.assistant .msg-content{background:var(--bg3);border:1px solid var(--border);border-top-left-radius:4px}
+    .message.user .msg-content{background:rgba(245,166,35,.08);border:1px solid var(--border-gold);border-top-right-radius:4px}
+    .msg-content pre{background:#0d0d0d;border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5}
+    .msg-content code{font-family:'JetBrains Mono',monospace;font-size:12px}
+    .img-settings-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 100px;animation:fadeIn .2s}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .img-settings-panel{width:100%;max-width:720px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 24px;animation:slideUp .25s ease}
+    @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes pulseBadge{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.1)}}
+    .isp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .isp-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--gold);font-family:'Orbitron',sans-serif}
+    .isp-tabs{display:flex;gap:4px}
+    .isp-tab{padding:5px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);font-family:'Space Grotesk',sans-serif;transition:all .2s}
+    .isp-tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+    .isp-prompt{font-size:12px;color:var(--text2);margin-bottom:16px;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);word-break:break-all}
+    .isp-prompt b{color:var(--text);font-weight:500}
+    .isp-label{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px}
+    .isp-sizes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+    .isp-size{padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--bg4);color:var(--text2);font-family:'Space Grotesk',sans-serif;transition:all .2s;text-align:center;line-height:1.3}
+    .isp-size:hover{border-color:var(--gold);color:var(--text)}
+    .isp-size.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+    .isp-size small{display:block;font-size:9px;opacity:.7;margin-top:1px}
+    .isp-themes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+    .isp-theme{padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--bg4);color:var(--text2);font-family:'Space Grotesk',sans-serif;transition:all .2s;display:flex;align-items:center;gap:4px}
+    .isp-theme:hover{border-color:var(--gold);color:var(--text)}
+    .isp-theme.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+    .isp-actions{display:flex;gap:10px}
+    .isp-gen-btn{display:flex;align-items:center;gap:8px;padding:10px 22px;border-radius:10px;border:none;background:var(--gold);color:#000;font-size:13px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s}
+    .isp-gen-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+    .isp-cancel-btn{padding:10px 22px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;font-weight:500;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s}
+    .isp-cancel-btn:hover{border-color:var(--text3);color:var(--text)}
+    .msg-content img[alt="Generated Image"]{cursor:pointer;transition:transform .2s,box-shadow .2s}
+    .msg-content img[alt="Generated Image"]:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(245,166,35,.25)}
+    .img-lightbox{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s;cursor:pointer}
+    .img-lightbox-inner{position:relative;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .img-lightbox-inner img{max-width:95vw;max-height:80vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+    .img-lightbox-bar{display:flex;gap:10px;align-items:center}
+    .img-lightbox-btn{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s}
+    .img-lightbox-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+    .img-lightbox-close{position:absolute;top:-40px;right:0;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .img-lightbox-close:hover{border-color:var(--gold);color:var(--gold)}
+    .action-picker{padding:4px 0}
+    .action-picker-title{font-size:13px;color:var(--text);margin-bottom:12px;font-weight:500}
+    .action-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .action-pick-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .25s;color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;text-align:center}
+    .action-pick-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(245,166,35,0.06);transform:translateY(-1px)}
+    .action-pick-btn span:first-of-type{font-weight:600;font-size:13px}
+    .action-desc{font-size:10px;color:var(--text3);font-weight:400;line-height:1.3}
+    .msg-content p{margin-bottom:8px}.msg-content p:last-child{margin-bottom:0}
+    .msg-content strong{color:var(--gold)}
+    .msg-content img{max-width:100%;border-radius:10px;margin:10px 0}
+
+    .typing-indicator{display:flex;gap:5px;padding:8px 0;align-items:center}
+    .typing-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:bounce 1.4s ease-in-out infinite}
+    .typing-dot:nth-child(2){animation-delay:.15s}.typing-dot:nth-child(3){animation-delay:.3s}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-8px);opacity:1}}
+
+    .input-area{padding:12px 24px 20px;border-top:1px solid var(--border);background:var(--bg);position:sticky;bottom:0;z-index:40}
+    .input-box{max-width:800px;margin:0 auto;background:var(--bg3);border:1px solid var(--border);border-radius:14px;display:flex;align-items:flex-end;transition:border-color .2s}
+    .input-box:focus-within{border-color:var(--gold);box-shadow:0 0 20px rgba(245,166,35,.05)}
+    .input-left{display:flex;align-items:center;padding:8px 4px 8px 12px;gap:4px}
+    .input-left .attach-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:6px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+    .input-left .attach-btn:hover{color:var(--text);background:var(--bg4)}
+    .input-box textarea{flex:1;background:transparent;border:none;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:14px 8px;resize:none;outline:none;max-height:150px;min-height:48px}
+    .input-box textarea::placeholder{color:var(--text3)}
+    .input-right{display:flex;align-items:center;gap:6px;padding:8px 10px}
+    .model-pill{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:8px;font-size:11px;cursor:pointer;background:var(--bg4);border:1px solid var(--border);color:var(--text2);font-family:'Space Grotesk',sans-serif;transition:all .2s;white-space:nowrap;max-width:160px;overflow:hidden}
+    .model-pill #currentModelLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .model-pill:hover{border-color:var(--gold);color:var(--gold)}
+    .model-pill .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .send-btn{width:36px;height:36px;border-radius:10px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--gold);color:#000;transition:all .2s}
+    .send-btn:hover{opacity:.85}.send-btn:disabled{opacity:.3;cursor:not-allowed}
+
+    .model-dropdown{display:none;position:absolute;bottom:calc(100% + 8px);right:10px;width:360px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:200;overflow:hidden}
+    .model-dropdown.open{display:block}
+    .model-dropdown .md-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .model-dropdown .md-header input{background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:12px;width:100%;font-family:'Space Grotesk',sans-serif;outline:none}
+    .model-dropdown .md-header input:focus{border-color:var(--gold)}
+    .md-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:4px;margin-left:8px}
+    .md-tabs{display:flex;padding:8px 16px;gap:8px;border-bottom:1px solid var(--border)}
+    .md-tab{padding:5px 14px;border-radius:20px;font-size:11px;cursor:pointer;border:1px solid var(--border);color:var(--text2);background:transparent;font-family:'Space Grotesk',sans-serif;display:inline-flex;align-items:center;gap:4px}
+    .md-tab.active{background:var(--green);border-color:var(--green);color:#000;font-weight:600}
+    .md-tab svg{vertical-align:middle}
+    .md-list{max-height:320px;overflow-y:auto;padding:8px}
+    .md-item{padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:2px}
+    .md-item:hover{background:var(--bg4)}
+    .md-item.selected{background:rgba(245,166,35,.08);border:1px solid var(--border-gold)}
+    .md-item .md-name{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px}
+    .md-item .md-name .rec{font-size:9px;background:var(--green);color:#000;padding:2px 6px;border-radius:4px;font-weight:700}
+    .md-item .md-desc{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.4}
+    .md-item .md-tags{display:flex;gap:4px;margin-top:5px}
+    .md-item .md-tags span{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600}
+    .tag-image{background:rgba(59,130,246,.15);color:var(--blue)}
+    .tag-code{background:rgba(34,197,94,.15);color:var(--green)}
+    .tag-reasoning{background:rgba(168,85,247,.15);color:var(--purple)}
+    .tag-general{background:rgba(245,166,35,.15);color:var(--gold)}
+    .tag-free{font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,.15);color:var(--green);font-weight:700;margin-left:auto}
+
+    .lang-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-right:8px}
+    .lang-toggle button{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px 10px;font-size:11px;font-family:'Space Grotesk',sans-serif;font-weight:600;transition:all .2s}
+    .lang-toggle button.active{background:var(--gold);color:#000}
+
+    .input-wrapper-relative{position:relative}
+
+    .image-previews{display:flex;gap:8px;flex-wrap:wrap;padding:8px 12px 0;max-width:800px;margin:0 auto}
+    .img-preview{position:relative;width:60px;height:60px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+    .img-preview img{width:100%;height:100%;object-fit:cover}
+    .img-preview .remove-img{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.7);border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+    .img-preview .remove-img:hover{background:var(--red)}
+
+    .drag-overlay{display:none;position:fixed;inset:0;background:rgba(245,166,35,.08);border:2px dashed var(--gold);z-index:300;align-items:center;justify-content:center;pointer-events:none}
+    .drag-overlay.active{display:flex}
+    .drag-overlay-text{font-family:'Orbitron',sans-serif;font-size:16px;color:var(--gold);padding:20px 40px;background:rgba(0,0,0,.8);border-radius:12px;border:1px solid var(--border-gold)}
+
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+
+    .sidebar-collapsed .sidebar{transform:translateX(-100%)}
+    .sidebar-collapsed .main{margin-left:0}
+
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%)}
+      .sidebar.open{transform:translateX(0)}
+      .sidebar-collapsed .sidebar{transform:translateX(-100%)}
+      .sidebar-collapsed .sidebar.open{transform:translateX(0)}
+      .overlay.open{display:block}
+      .main{margin-left:0}
+      .sidebar-collapsed .main{margin-left:0}
+      .menu-toggle{display:flex}
+      .desktop-only{display:none!important}
+      .mobile-only{display:flex!important}
+      #topbarToggle{display:none!important}
+      .video-btn-topbar{display:none!important}
+      .features-grid{grid-template-columns:repeat(2,1fr);gap:8px;padding:0 8px}
+      .feature-card{padding:10px}
+      .feature-card h4{font-size:11px}
+      .feature-card .fc-tag{font-size:8px;padding:1px 5px}
+      .feature-card .fc-example span{font-size:9px}
+      .welcome{min-height:auto;padding:0 8px}
+      .welcome h2{font-size:18px}
+      .welcome .desc{font-size:12px;margin-bottom:28px}
+      .welcome .logo-glow{width:50px;height:50px;margin-bottom:12px}
+      .welcome .logo-glow img{width:50px;height:50px}
+      .welcome .sub{margin-bottom:12px}
+      .chat-area{padding:12px 8px}
+      .input-area{padding:8px 10px 12px}
+      .input-box textarea{min-height:38px;padding:10px 8px;font-size:13px}
+      .input-left{padding:6px 2px 6px 8px}
+      .input-right{padding:6px 8px}
+      .model-dropdown{width:calc(100vw - 48px);right:0}
+      .mode-info-wrap{top:45px}
+      .mode-info-bar{padding:5px 10px;gap:5px;flex-wrap:wrap}
+      .mode-info-bar.show{max-height:120px}
+      .mode-info-bar .mode-name{font-size:11px;max-width:140px}
+      .mode-info-bar .mode-tags{margin-left:0;flex-wrap:wrap;width:100%}
+      .mode-info-bar .mode-sep{display:none}
+      .mode-info-bar .mode-provider{display:none}
+      .mode-toggle-btn{right:10px}
+    }
+    @media(max-width:400px){
+      .features-grid{grid-template-columns:repeat(2,1fr);gap:6px;padding:0 4px}
+      .feature-card{padding:8px}
+      .feature-card .fc-icon{font-size:14px;margin-bottom:4px}
+      .feature-card h4{font-size:10px}
+      .feature-card .fc-example span{font-size:8px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="drag-overlay" id="dragOverlay"><div class="drag-overlay-text" data-i18n="dropFiles">Drop files here</div></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-top">
+    <div class="brand">
+      <img src="/logo.png" alt="TORD" />
+      <h1>TORD AI</h1>
+    </div>
+    <button class="sidebar-toggle-btn desktop-only" onclick="toggleSidebarCollapse()" title="Toggle sidebar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </button>
+    <button class="sidebar-close-btn mobile-only" onclick="closeSidebar()" title="Close sidebar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <button class="new-chat-btn" onclick="newChat()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span data-i18n="newChat">New Chat</span>
+  </button>
+
+  <div class="chat-history" id="chatHistory">
+    <div class="history-group-label" data-i18n="previous">Previous</div>
+    <div id="chatHistoryList"></div>
+  </div>
+
+  <div class="wallet-section" id="walletSection">
+    <button class="wallet-connect-btn" id="walletConnectBtn" onclick="connectWallet()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="18" cy="15" r="1.5"/></svg>
+      <span data-i18n="connectWallet">Connect Wallet</span>
+    </button>
+    <div class="wallet-info" id="walletInfo" style="display:none">
+      <div class="wallet-addr-row">
+        <img class="wallet-avatar" id="walletAvatar" onclick="showAvatarPicker()" title="Change avatar" src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=default" alt="avatar">
+        <span class="wallet-addr" id="walletAddr"></span>
+        <button class="wallet-disconnect" onclick="disconnectWallet()" title="Disconnect">&#10005;</button>
+      </div>
+      <div class="wallet-balance-row">
+        <div class="wallet-balance" id="walletBalanceBox">
+          <img class="wallet-balance-icon" src="https://assets.coingecko.com/coins/images/325/small/Tether.png" alt="USDT">
+          <span class="wallet-balance-amount" id="walletBalanceAmt">0.00</span>
+          <span class="wallet-balance-symbol">USDT</span>
+        </div>
+        <button class="wallet-refresh" id="walletRefreshBtn" onclick="refreshBalance()" title="Refresh balance">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+      <div class="wallet-network" id="walletNetwork">BSC Mainnet</div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span data-i18n="backToHome">Back to Home</span>
+    </a>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <button class="menu-toggle" onclick="openSidebar()" id="menuToggleMobile">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" id="topbarToggle" title="Toggle sidebar" style="display:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    </button>
+    <img src="/logo.png" alt="" class="logo-sm" />
+    <h2>TORD AI</h2>
+    <div class="lang-toggle" id="langToggle"><button onclick="setLang('en')" class="active">EN</button><button onclick="setLang('cn')">CN</button></div>
+    <button class="video-btn-topbar" onclick="void(0)" style="position:relative;display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:8px;cursor:default;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;white-space:nowrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Tord AI Video
+      <span style="position:absolute;top:-7px;right:-10px;background:#ef4444;color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:'Space Grotesk',sans-serif;letter-spacing:.3px;animation:pulseBadge 1.5s ease-in-out infinite">SOON</span>
+    </button>
+    <div class="topbar-avatar-wrap">
+      <div class="topbar-avatar" id="topbarAvatar" onclick="toggleProfileDropdown()" title="Your profile"></div>
+      <div class="profile-dropdown" id="profileDropdown" style="display:none"></div>
+    </div>
+  </header>
+
+  <div class="mode-info-wrap" id="modeInfoWrap">
+    <button class="mode-toggle-btn" id="modeToggleBtn" onclick="toggleModeInfo()" onmouseenter="hoverModeInfo(true)" onmouseleave="hoverModeInfo(false)" title="Model info">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+    </button>
+    <div class="mode-info-bar" id="modeInfoBar">
+      <span class="mode-label" data-i18n="modeLabel">Mode:</span>
+      <span class="mode-name" id="modeInfoName">Auto (Smart Router)</span>
+      <span class="mode-tag free" id="modeInfoTier">FREE</span>
+      <span class="mode-sep"></span>
+      <span class="mode-provider" id="modeInfoProvider">DeepSeek + OpenRouter</span>
+      <div class="mode-tags" id="modeInfoTags">
+        <span class="mode-cap">Image</span>
+        <span class="mode-cap">Code</span>
+        <span class="mode-cap">Reasoning</span>
+        <span class="mode-cap">General</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="welcome" id="welcome">
+      <div class="logo-glow" id="welcomeLogo"></div>
+      <h2 data-i18n="welcomeTitle">TORD POWERFUL AI AGENT</h2>
+      <div class="sub" data-i18n="welcomeSub">Powered by TordLabs</div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="fc-icon">🎨</div>
+          <h4 data-i18n="fcImage">Image</h4>
+          <div class="fc-tag" data-i18n="fcImageTag">create / generate / design</div>
+          <div class="fc-example">
+            <span data-i18n="fcImageEx">e.g. "create a 3D logo for Tord Labs"</span>
+            <button class="copy-btn" onclick="copyExample(this,'create a 3D logo for Tord Labs')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">💻</div>
+          <h4 data-i18n="fcCode">Code</h4>
+          <div class="fc-tag" data-i18n="fcCodeTag">write / code / build / debug</div>
+          <div class="fc-example">
+            <span data-i18n="fcCodeEx">e.g. "write a Solidity smart contract"</span>
+            <button class="copy-btn" onclick="copyExample(this,'write a Solidity smart contract')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🧠</div>
+          <h4 data-i18n="fcReasoning">Reasoning</h4>
+          <div class="fc-tag" data-i18n="fcReasoningTag">explain / analyze / compare</div>
+          <div class="fc-example">
+            <span data-i18n="fcReasoningEx">e.g. "explain how yield farming works"</span>
+            <button class="copy-btn" onclick="copyExample(this,'explain how yield farming works')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">💬</div>
+          <h4 data-i18n="fcGeneral">General Chat</h4>
+          <div class="fc-tag" data-i18n="fcGeneralTag">just type anything</div>
+          <div class="fc-example">
+            <span data-i18n="fcGeneralEx">e.g. "what is the best DEX?"</span>
+            <button class="copy-btn" onclick="copyExample(this,'what is the best DEX?')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📎</div>
+          <h4 data-i18n="fcFile">File Upload</h4>
+          <div class="fc-tag" data-i18n="fcFileTag">attach file + prompt</div>
+          <div class="fc-example">
+            <span data-i18n="fcFileEx">e.g. "analyze this code + attach file"</span>
+            <button class="copy-btn" onclick="copyExample(this,'analyze this code + attach file')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">✏️</div>
+          <h4 data-i18n="fcEdit">Edit Image</h4>
+          <div class="fc-tag" data-i18n="fcEditTag">follow-up after image</div>
+          <div class="fc-example">
+            <span data-i18n="fcEditEx">e.g. "change background to dark blue"</span>
+            <button class="copy-btn" onclick="copyExample(this,'change background to dark blue')" title="Copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages-box" id="messagesBox" style="display:none"></div>
+  </div>
+
+  <div class="input-area">
+    <input type="file" id="fileInput" multiple style="display:none" onchange="handleFileSelect(this.files)" />
+    <div class="image-previews" id="imagePreviews"></div>
+    <div class="input-wrapper-relative">
+      <div class="model-dropdown" id="modelDropdown">
+        <div class="md-header">
+          <input type="text" placeholder="Search models..." id="modelSearch" oninput="filterModels()" />
+          <button class="md-close" onclick="closeDropdown()">×</button>
+        </div>
+        <div class="md-tabs">
+          <button class="md-tab active" onclick="filterTab('free',this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> <span data-i18n="mdFree">Free</span> (<span id="freeCount">0</span>)</button>
+          <button class="md-tab" onclick="filterTab('premium',this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> <span data-i18n="mdPremium">Premium</span> (<span id="premiumCount">0</span>)</button>
+          <span style="margin-left:auto;font-size:11px;color:#666" id="totalCount"></span>
+        </div>
+        <div class="md-list" id="modelList"></div>
+      </div>
+      <div class="input-box" id="inputBox">
+        <div class="input-left">
+          <button class="attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach files">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.49"/></svg>
+          </button>
+        </div>
+        <textarea id="chatInput" placeholder="Ask anything..." rows="1" onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+        <div class="input-right">
+          <div class="model-pill" onclick="toggleDropdown()">
+            <span class="pill-dot"></span>
+            <span id="currentModelLabel">Auto</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let currentLang = localStorage.getItem('tordai_lang') || 'en';
+const T = {
+  en: {
+    newChat: 'New Chat',
+    previous: 'Previous',
+    connectWallet: 'Connect Wallet',
+    backToHome: 'Back to Home',
+    welcomeTitle: 'TORD POWERFUL AI AGENT',
+    welcomeSub: 'Powered by TordLabs',
+    fcImage: 'Image',
+    fcImageTag: 'create / generate / design',
+    fcImageEx: 'e.g. "create a 3D logo for Tord Labs"',
+    fcCode: 'Code',
+    fcCodeTag: 'write / code / build / debug',
+    fcCodeEx: 'e.g. "write a Solidity smart contract"',
+    fcReasoning: 'Reasoning',
+    fcReasoningTag: 'explain / analyze / compare',
+    fcReasoningEx: 'e.g. "explain how yield farming works"',
+    fcGeneral: 'General Chat',
+    fcGeneralTag: 'just type anything',
+    fcGeneralEx: 'e.g. "what is the best DEX?"',
+    fcFile: 'File Upload',
+    fcFileTag: 'attach file + prompt',
+    fcFileEx: 'e.g. "analyze this code + attach file"',
+    fcEdit: 'Edit Image',
+    fcEditTag: 'follow-up after image',
+    fcEditEx: 'e.g. "change background to dark blue"',
+    askAnything: 'Ask anything...',
+    searchModels: 'Search models...',
+    dropFiles: 'Drop files here',
+    changeAvatar: 'Change Avatar',
+    copyAddress: 'Copy Address',
+    disconnect: 'Disconnect',
+    howToUse: 'How to Use',
+    pricing: 'Pricing',
+    modeLabel: 'Mode:',
+    free: 'Free',
+    premium: 'Premium',
+    mdFree: 'Free',
+    mdPremium: 'Premium',
+    howToUseTitle: 'How to Use TORD AI',
+    howToUseSections: [
+      ['Getting Started', 'Type any question in the chat box and press send. TORD AI automatically selects the best model for your task.'],
+      ['Image Generation', 'Type requests like \'create a logo\' or \'generate a banner\'. Attach reference images by clicking the paperclip icon or drag & drop (max 20MB).'],
+      ['Code & Reasoning', 'Ask coding questions, debug code, or request explanations. Upload code files for analysis.'],
+      ['Premium Models', 'Connect your BSC wallet and hold USDT/$TORD to unlock premium AI models. $50 worth = $1 premium credit, resets every 24h.'],
+      ['Chat History', 'Your conversations are saved locally. Click \'New Chat\' to start fresh. Previous chats appear in the sidebar.']
+    ]
+  },
+  cn: {
+    newChat: '新对话',
+    previous: '历史记录',
+    connectWallet: '连接钱包',
+    backToHome: '返回首页',
+    welcomeTitle: 'TORD 强大AI助手',
+    welcomeSub: '由 TordLabs 提供支持',
+    fcImage: '图像',
+    fcImageTag: '创建 / 生成 / 设计',
+    fcImageEx: '例如 "为Tord Labs创建3D标志"',
+    fcCode: '代码',
+    fcCodeTag: '编写 / 编码 / 构建 / 调试',
+    fcCodeEx: '例如 "编写Solidity智能合约"',
+    fcReasoning: '推理',
+    fcReasoningTag: '解释 / 分析 / 比较',
+    fcReasoningEx: '例如 "解释流动性挖矿原理"',
+    fcGeneral: '通用聊天',
+    fcGeneralTag: '随意输入',
+    fcGeneralEx: '例如 "最好的DEX是什么?"',
+    fcFile: '文件上传',
+    fcFileTag: '附加文件 + 提示',
+    fcFileEx: '例如 "分析代码 + 附加文件"',
+    fcEdit: '编辑图像',
+    fcEditTag: '在图像之后跟进',
+    fcEditEx: '例如 "将背景更改为深蓝色"',
+    askAnything: '随意提问...',
+    searchModels: '搜索模型...',
+    dropFiles: '拖放文件到这里',
+    changeAvatar: '更换头像',
+    copyAddress: '复制地址',
+    disconnect: '断开连接',
+    howToUse: '使用指南',
+    pricing: '价格方案',
+    modeLabel: '模式:',
+    free: '免费',
+    premium: '高级',
+    mdFree: '免费',
+    mdPremium: '高级',
+    howToUseTitle: '如何使用 TORD AI',
+    howToUseSections: [
+      ['快速开始', '在聊天框中输入任何问题并发送。TORD AI 会自动选择最适合您任务的模型。'],
+      ['图像生成', '输入如\'创建标志\'或\'生成横幅\'等请求。点击回形针图标或拖放附加参考图片（最大20MB）。'],
+      ['代码与推理', '提出编码问题、调试代码或请求解释。上传代码文件进行分析。'],
+      ['高级模型', '连接BSC钱包并持有USDT/$TORD以解锁高级AI模型。价值$50 = $1高级积分，每24小时重置。'],
+      ['聊天历史', '您的对话保存在本地。点击\'新对话\'重新开始。之前的聊天记录显示在侧边栏中。']
+    ]
+  }
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('tordai_lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (T[lang] && T[lang][key] !== undefined) el.textContent = T[lang][key];
+  });
+  var chatInput = document.getElementById('chatInput');
+  if (chatInput) chatInput.placeholder = T[lang].askAnything;
+  var modelSearch = document.getElementById('modelSearch');
+  if (modelSearch) modelSearch.placeholder = T[lang].searchModels;
+  var btns = document.querySelectorAll('#langToggle button');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  if (lang === 'en' && btns[0]) btns[0].classList.add('active');
+  if (lang === 'cn' && btns[1]) btns[1].classList.add('active');
+}
+
+function showHowToUse() {
+  var existing = document.querySelector('.howto-overlay');
+  if (existing) existing.remove();
+  var lang = currentLang;
+  var t = T[lang];
+  var sectionsHtml = '';
+  var icons = ['\u{1F680}', '\u{1F3A8}', '\u{1F4BB}', '\u2B50', '\u{1F4AC}'];
+  t.howToUseSections.forEach(function(s, i) {
+    sectionsHtml += '<div style="margin-bottom:14px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px">' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">' + icons[i] + '</span><span style="font-size:13px;font-weight:600;color:var(--gold)">' + s[0] + '</span></div>' +
+      '<div style="font-size:12px;color:var(--text2);line-height:1.6">' + s[1] + '</div></div>';
+  });
+  var overlay = document.createElement('div');
+  overlay.className = 'howto-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s';
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;animation:slideUp .25s ease">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">' +
+    '<h3 style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:700;color:var(--gold)">' + t.howToUseTitle + '</h3>' +
+    '<button onclick="document.querySelector(\'.howto-overlay\').remove()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px">\u00D7</button></div>' +
+    sectionsHtml + '</div>';
+  document.body.appendChild(overlay);
+}
+
+(function initLang() {
+  if (currentLang !== 'en') setLang(currentLang);
+  else {
+    var btns = document.querySelectorAll('#langToggle button');
+    if (btns[0]) btns[0].classList.add('active');
+  }
+})();
+
+const USDT_CONTRACT = '0x55d398326f99059fF775485246999027B3197955';
+const BSC_CHAIN_ID = '0x38';
+const BSC_RPC = 'https://bsc-dataseed.binance.org/';
+
+let connectedWallet = null;
+let walletProvider = null;
+
+function identifyProvider(p) {
+  if (p.isTrust || p.isTrustWallet) return 'trust';
+  if (p.isSafePal) return 'safepal';
+  if (p.isTokenPocket) return 'tokenpocket';
+  if (p.isCoinbaseWallet) return 'coinbase';
+  if (p.isBraveWallet) return 'brave';
+  if (p.isOKExWallet || p.isOkxWallet) return 'okx';
+  if (p.isBitKeep || p.isBitget) return 'bitget';
+  if (p.isMathWallet) return 'math';
+  if (p.isCoin98) return 'coin98';
+  if (p.isMetaMask) return 'metamask';
+  return 'generic';
+}
+
+const WALLET_NAMES = { trust:'Trust Wallet', safepal:'SafePal', tokenpocket:'TokenPocket', coinbase:'Coinbase Wallet', brave:'Brave Wallet', okx:'OKX Wallet', bitget:'Bitget Wallet', math:'MathWallet', coin98:'Coin98', metamask:'MetaMask', generic:'Wallet' };
+
+function getAvailableProviders() {
+  const seen = new Set();
+  const providers = [];
+  function add(provider, key) {
+    if (!provider || !provider.request || seen.has(key)) return;
+    seen.add(key);
+    providers.push({ provider, key, name: WALLET_NAMES[key] || key });
+  }
+  if (window.ethereum) {
+    if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+      window.ethereum.providers.forEach(p => add(p, identifyProvider(p)));
+    } else {
+      add(window.ethereum, identifyProvider(window.ethereum));
+    }
+  }
+  if (window.trustwallet) add(window.trustwallet, 'trust');
+  if (window.okxwallet) add(window.okxwallet, 'okx');
+  if (window.bitkeep && window.bitkeep.ethereum) add(window.bitkeep.ethereum, 'bitget');
+  if (window.coin98 && window.coin98.provider) add(window.coin98.provider, 'coin98');
+  if (window.safepalProvider) add(window.safepalProvider, 'safepal');
+  if (window.tokenpocket && window.tokenpocket.ethereum) add(window.tokenpocket.ethereum, 'tokenpocket');
+  if (window.coinbaseWalletExtension) add(window.coinbaseWalletExtension, 'coinbase');
+  return providers;
+}
+
+async function switchToBSC() {
+  if (!walletProvider) return;
+  try {
+    await walletProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID }] });
+  } catch (switchErr) {
+    if (switchErr.code === 4902 || switchErr.code === -32603) {
+      try {
+        await walletProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: BSC_CHAIN_ID,
+            chainName: 'BNB Smart Chain',
+            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+            rpcUrls: [BSC_RPC, 'https://bsc-dataseed1.defibit.io/', 'https://bsc-dataseed1.ninicoin.io/'],
+            blockExplorerUrls: ['https://bscscan.com']
+          }]
+        });
+      } catch (addErr) {
+        console.error('Failed to add BSC network:', addErr);
+      }
+    }
+  }
+}
+
+async function connectWallet() {
+  const providers = getAvailableProviders();
+  if (providers.length === 0) {
+    showWalletModal();
+    return;
+  }
+  let chosen = providers[0];
+  if (providers.length > 1) {
+    chosen = await showProviderPicker(providers);
+    if (!chosen) return;
+  }
+  walletProvider = chosen.provider;
+  try {
+    const accounts = await walletProvider.request({ method: 'eth_requestAccounts' });
+    if (!accounts || accounts.length === 0) return;
+    connectedWallet = accounts[0];
+
+    try {
+      await walletProvider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: BSC_CHAIN_ID }] });
+    } catch (switchErr) {
+      if (switchErr.code === 4902 || switchErr.code === -32603) {
+        await walletProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: BSC_CHAIN_ID,
+            chainName: 'BNB Smart Chain',
+            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+            rpcUrls: [BSC_RPC, 'https://bsc-dataseed1.defibit.io/', 'https://bsc-dataseed1.ninicoin.io/'],
+            blockExplorerUrls: ['https://bscscan.com']
+          }]
+        });
+      }
+    }
+
+    updateWalletUI(chosen.key);
+    fetchTokenBalance();
+    loadSavedAvatar();
+    registerPremium();
+    const hasAvatar = localStorage.getItem('tordai_avatar_' + connectedWallet.toLowerCase());
+    if (!hasAvatar) setTimeout(() => showAvatarPicker(), 400);
+
+    walletProvider.on && walletProvider.on('accountsChanged', (accs) => {
+      if (!accs || accs.length === 0) { disconnectWallet(); return; }
+      connectedWallet = accs[0];
+      updateWalletUI();
+      fetchTokenBalance();
+      loadSavedAvatar();
+    });
+    walletProvider.on && walletProvider.on('chainChanged', (newChainId) => {
+      if (newChainId !== BSC_CHAIN_ID) { switchToBSC(); }
+      fetchTokenBalance();
+    });
+  } catch (err) {
+    console.error('Wallet connect error:', err);
+    if (err.code !== 4001) alert('Failed to connect. Please try again.');
+  }
+}
+
+function showWalletModal() {
+  const existing = document.getElementById('walletModal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'walletModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)';
+  modal.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:340px;width:90%;text-align:center">
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;color:var(--gold)">No Wallet Detected</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5">Install any BSC-compatible wallet to connect:<br>MetaMask, Trust Wallet, SafePal, OKX, TokenPocket, or any EVM wallet.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <a href="https://metamask.io/download/" target="_blank" style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;transition:all .2s">MetaMask</a>
+      <a href="https://trustwallet.com/download" target="_blank" style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;transition:all .2s">Trust Wallet</a>
+      <a href="https://www.okx.com/web3" target="_blank" style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;transition:all .2s">OKX</a>
+    </div>
+    <button onclick="this.closest('#walletModal').remove()" style="margin-top:16px;background:none;border:1px solid var(--border);color:var(--text3);padding:6px 20px;border-radius:8px;cursor:pointer;font-size:12px">Close</button>
+  </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+}
+
+function showProviderPicker(providers) {
+  return new Promise((resolve) => {
+    const existing = document.getElementById('walletModal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'walletModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)';
+    const btns = providers.map((p, i) =>
+      `<button data-idx="${i}" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:13px;font-family:'Space Grotesk',sans-serif;transition:all .2s;text-align:left">${p.name}</button>`
+    ).join('');
+    modal.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:320px;width:90%">
+      <div style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gold);text-align:center">Select Wallet</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${btns}</div>
+      <button onclick="this.closest('#walletModal').remove()" style="margin-top:14px;width:100%;background:none;border:1px solid var(--border);color:var(--text3);padding:8px;border-radius:8px;cursor:pointer;font-size:12px">Cancel</button>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.querySelectorAll('[data-idx]').forEach(btn => {
+      btn.addEventListener('click', () => { modal.remove(); resolve(providers[parseInt(btn.dataset.idx)]); });
+      btn.addEventListener('mouseenter', () => { btn.style.borderColor = 'var(--gold)'; btn.style.background = 'var(--bg4)'; });
+      btn.addEventListener('mouseleave', () => { btn.style.borderColor = 'var(--border)'; btn.style.background = 'var(--bg3)'; });
+    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) { modal.remove(); resolve(null); } });
+  });
+}
+
+const AVATAR_SEEDS = [
+  'Luna','Max','Zoe','Felix','Maya','Leo','Aria','Oscar','Nova','Kai',
+  'Ivy','Rex','Mia','Jazz','Sky','Rio','Ada','Finn','Sage','Cruz',
+  'Lila','Axel','Ruby','Hugo','Cleo'
+];
+
+function getAvatarUrl(seed) {
+  return 'https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=' + encodeURIComponent(seed) + '&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf';
+}
+
+function showAvatarPicker() {
+  const existing = document.getElementById('avatarPickerOverlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'avatarPickerOverlay';
+  overlay.className = 'avatar-modal-overlay';
+  const gridItems = AVATAR_SEEDS.map((seed, i) =>
+    `<div class="avatar-option" data-seed="${seed}" onclick="selectAvatar(this,'${seed}')"><img src="${getAvatarUrl(seed)}" alt="${seed}" loading="lazy"></div>`
+  ).join('');
+  overlay.innerHTML = `<div class="avatar-modal">
+    <h3>Pick Your Avatar</h3>
+    <div class="subtitle">Choose a profile avatar for your wallet</div>
+    <div class="avatar-grid">${gridItems}</div>
+    <button class="avatar-confirm-btn" id="avatarConfirmBtn" onclick="confirmAvatar()" disabled>Select Avatar</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+let pendingAvatarSeed = null;
+
+function selectAvatar(el, seed) {
+  pendingAvatarSeed = seed;
+  document.querySelectorAll('#avatarPickerOverlay .avatar-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('avatarConfirmBtn').disabled = false;
+}
+
+function confirmAvatar() {
+  if (!pendingAvatarSeed || !connectedWallet) return;
+  const url = getAvatarUrl(pendingAvatarSeed);
+  document.getElementById('walletAvatar').src = url;
+  localStorage.setItem('tordai_avatar_' + connectedWallet.toLowerCase(), pendingAvatarSeed);
+  const topbar = document.getElementById('topbarAvatar');
+  if (topbar) topbar.innerHTML = '<img src="' + url + '" alt="avatar" />';
+  const overlay = document.getElementById('avatarPickerOverlay');
+  if (overlay) overlay.remove();
+  pendingAvatarSeed = null;
+}
+
+function loadSavedAvatar() {
+  if (!connectedWallet) return;
+  const saved = localStorage.getItem('tordai_avatar_' + connectedWallet.toLowerCase());
+  const url = saved ? getAvatarUrl(saved) : getAvatarUrl(connectedWallet.slice(2, 10));
+  document.getElementById('walletAvatar').src = url;
+  const topbar = document.getElementById('topbarAvatar');
+  if (topbar) topbar.innerHTML = '<img src="' + url + '" alt="avatar" />';
+}
+
+function updateTopbarAvatar() {
+  const topbar = document.getElementById('topbarAvatar');
+  if (!topbar) return;
+  if (connectedWallet) {
+    const saved = localStorage.getItem('tordai_avatar_' + connectedWallet.toLowerCase());
+    const url = saved ? getAvatarUrl(saved) : getAvatarUrl(connectedWallet.slice(2, 10));
+    topbar.innerHTML = '<img src="' + url + '" alt="avatar" />';
+  } else {
+    topbar.innerHTML = '<svg width="22" height="22" viewBox="0 0 512 512"><defs><linearGradient id="avgG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#d4891a"/></linearGradient></defs><circle cx="256" cy="256" r="256" fill="url(#avgG)"/><circle cx="256" cy="200" r="80" fill="#fff"/><path d="M256 300c-88 0-160 40-160 100v12h320v-12c0-60-72-100-160-100z" fill="#fff"/></svg>';
+  }
+  updateTopbarBadge();
+}
+
+function updateTopbarBadge() {
+}
+
+function toggleProfileDropdown() {
+  const dd = document.getElementById('profileDropdown');
+  if (dd.style.display === 'none') {
+    renderProfileDropdown();
+    dd.style.display = 'block';
+    startResetTimer();
+    setTimeout(() => {
+      document.addEventListener('click', closeProfileDropdownOutside);
+    }, 10);
+  } else {
+    dd.style.display = 'none';
+    document.removeEventListener('click', closeProfileDropdownOutside);
+    if (pdTimerInterval) { clearInterval(pdTimerInterval); pdTimerInterval = null; }
+  }
+}
+
+function closeProfileDropdownOutside(e) {
+  const wrap = document.querySelector('.topbar-avatar-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('profileDropdown').style.display = 'none';
+    document.removeEventListener('click', closeProfileDropdownOutside);
+  }
+}
+
+function renderProfileDropdown() {
+  const dd = document.getElementById('profileDropdown');
+  if (!connectedWallet) {
+    dd.innerHTML = '<div style="text-align:center;padding:8px 0"><div style="margin-bottom:12px;color:var(--text2);font-size:13px">No wallet connected</div><button class="pd-connect" onclick="closeProfileDD();connectWallet()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Connect Wallet</button></div>';
+    return;
+  }
+  const short = connectedWallet.slice(0, 6) + '...' + connectedWallet.slice(-5);
+  const saved = localStorage.getItem('tordai_avatar_' + connectedWallet.toLowerCase());
+  const avatarUrl = saved ? getAvatarUrl(saved) : getAvatarUrl(connectedWallet.slice(2, 10));
+  const balEl = document.getElementById('walletBalanceAmt');
+  const balText = balEl ? balEl.textContent : '0.00';
+
+  let badgeHtml = '';
+  if (premiumStatus.badge && premiumStatus.badge_config) {
+    const bc = premiumStatus.badge_config;
+    badgeHtml = '<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid var(--border);background:rgba(245,166,35,0.04)">' +
+      '<img src="' + bc.icon + '" alt="' + bc.name + '" style="width:18px;height:18px;object-fit:contain">' +
+      '<span style="font-size:12px;font-weight:600;color:' + (bc.color || 'var(--gold)') + ';font-family:Orbitron,sans-serif">' + bc.name + '</span>' +
+      '</div>';
+  }
+
+  dd.innerHTML = '<div class="pd-header">' +
+    '<div class="pd-avatar" onclick="closeProfileDD();showAvatarPicker()" title="Change avatar"><img src="' + avatarUrl + '" alt="avatar"></div>' +
+    '<div class="pd-info"><div class="pd-addr" title="' + connectedWallet + '">' + short + '</div><div class="pd-label">BSC Mainnet</div></div>' +
+    '</div>' +
+    badgeHtml +
+    '<div class="pd-balance">' +
+    '<img class="pd-balance-icon" src="https://cryptologos.cc/logos/tether-usdt-logo.png?v=026" alt="USDT">' +
+    '<span class="pd-balance-amt">' + balText + '</span>' +
+    '<span class="pd-balance-sym">USDT</span>' +
+    '<button class="pd-balance-refresh" id="pdRefreshBtn" onclick="pdRefreshBalance()" title="Refresh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>' +
+    '</div>' +
+    '<div class="pd-balance" style="border-color:var(--border-gold);background:rgba(245,166,35,0.04)">' +
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="var(--gold)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
+    '<div style="flex:1;min-width:0">' +
+    '<div style="display:flex;align-items:baseline;gap:4px">' +
+    '<span class="pd-balance-amt" style="color:var(--gold)">' + (premiumStatus.registered && premiumStatus.token_allocation > 0 ? '$' + (premiumStatus.tokens_remaining || 0).toFixed(2) : '$0.00') + '</span>' +
+    '<span class="pd-balance-sym" style="color:var(--text3)">/ $' + (premiumStatus.registered ? (premiumStatus.token_allocation || 0).toFixed(2) : '0.00') + '</span>' +
+    '</div>' +
+    '<div id="pdResetTimer" style="font-size:9px;color:var(--text3);margin-top:2px;font-family:\'JetBrains Mono\',monospace"></div>' +
+    '</div>' +
+    '<span class="pd-balance-sym" style="color:var(--gold);font-weight:600;font-size:10px">PREMIUM</span>' +
+    '</div>' +
+    '<div class="pd-actions">' +
+    '<button class="pd-btn" onclick="closeProfileDD();showAvatarPicker()"><svg width="16" height="16" viewBox="0 0 512 512"><defs><linearGradient id="avgG4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#d4891a"/></linearGradient></defs><circle cx="256" cy="256" r="256" fill="url(#avgG4)"/><circle cx="256" cy="200" r="80" fill="#fff"/><path d="M256 300c-88 0-160 40-160 100v12h320v-12c0-60-72-100-160-100z" fill="#fff"/></svg> <span data-i18n="changeAvatar">Change Avatar</span></button>' +
+    '<button class="pd-btn" onclick="copyWalletAddr()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span data-i18n="copyAddress">Copy Address</span></button>' +
+    '<button class="pd-btn" onclick="closeProfileDD();window.location.href=\'/pricing\'"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span data-i18n="pricing">Pricing</span></button>' +
+    '<button class="pd-btn" onclick="closeProfileDD();showHowToUse()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span data-i18n="howToUse">How to Use</span></button>' +
+    '<button class="pd-btn danger" onclick="closeProfileDD();disconnectWallet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span data-i18n="disconnect">Disconnect</span></button>' +
+    '</div>';
+}
+
+let pdTimerInterval = null;
+function closeProfileDD() {
+  document.getElementById('profileDropdown').style.display = 'none';
+  document.removeEventListener('click', closeProfileDropdownOutside);
+  if (pdTimerInterval) { clearInterval(pdTimerInterval); pdTimerInterval = null; }
+}
+
+function startResetTimer() {
+  if (pdTimerInterval) { clearInterval(pdTimerInterval); pdTimerInterval = null; }
+  function tick() {
+    const el = document.getElementById('pdResetTimer');
+    if (!el) return;
+    if (!premiumStatus.registered || !premiumStatus.next_reset) {
+      el.textContent = 'Connect wallet to earn tokens';
+      return;
+    }
+    const resetAt = new Date(premiumStatus.next_reset).getTime();
+    const now = Date.now();
+    const diff = resetAt - now;
+    if (diff <= 0) {
+      el.innerHTML = '<span style="color:var(--gold)">Resetting now...</span>';
+      fetchPremiumStatus();
+      return;
+    }
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    el.innerHTML = '\u23F0 Resets in ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  tick();
+  pdTimerInterval = setInterval(tick, 1000);
+}
+
+async function pdRefreshBalance() {
+  const btn = document.getElementById('pdRefreshBtn');
+  if (btn) btn.classList.add('spinning');
+  await fetchTokenBalance();
+  const balEl = document.getElementById('walletBalanceAmt');
+  const amt = document.querySelector('.pd-balance-amt');
+  if (balEl && amt) amt.textContent = balEl.textContent;
+  setTimeout(() => { if (btn) btn.classList.remove('spinning'); }, 600);
+}
+
+function copyWalletAddr() {
+  if (!connectedWallet) return;
+  navigator.clipboard.writeText(connectedWallet).then(() => {
+    const btn = document.querySelector('.pd-btn:nth-child(2)');
+    if (btn) { const orig = btn.innerHTML; btn.innerHTML = btn.innerHTML.replace('Copy Address', 'Copied!'); setTimeout(() => { btn.innerHTML = orig; }, 1500); }
+  });
+}
+
+async function refreshBalance() {
+  const btn = document.getElementById('walletRefreshBtn');
+  btn.classList.add('spinning');
+  await fetchTokenBalance();
+  setTimeout(() => btn.classList.remove('spinning'), 600);
+}
+
+function disconnectWallet() {
+  connectedWallet = null;
+  walletProvider = null;
+  document.getElementById('walletConnectBtn').style.display = 'flex';
+  document.getElementById('walletInfo').style.display = 'none';
+  localStorage.removeItem('tordai_wallet');
+  updateTopbarAvatar();
+}
+
+function updateWalletUI(walletKey) {
+  if (!connectedWallet) return;
+  const short = connectedWallet.slice(0, 6) + '...' + connectedWallet.slice(-4);
+  document.getElementById('walletAddr').textContent = short;
+  document.getElementById('walletAddr').title = connectedWallet;
+  document.getElementById('walletConnectBtn').style.display = 'none';
+  document.getElementById('walletInfo').style.display = 'flex';
+  if (walletKey) localStorage.setItem('tordai_wallet', walletKey);
+}
+
+async function fetchTokenBalance() {
+  if (!connectedWallet) return;
+  const data = '0x70a08231000000000000000000000000' + connectedWallet.slice(2).toLowerCase();
+  let result = null;
+
+  if (walletProvider) {
+    try {
+      const chainId = await walletProvider.request({ method: 'eth_chainId' });
+      const onBSC = chainId === BSC_CHAIN_ID;
+      const netEl = document.getElementById('walletNetwork');
+      if (onBSC) {
+        netEl.textContent = 'BSC Mainnet';
+        netEl.style.color = 'var(--text3)';
+        netEl.style.cursor = 'default';
+        netEl.onclick = null;
+      } else {
+        netEl.innerHTML = '<span style="color:var(--red);cursor:pointer" onclick="switchToBSC()">⚠ Wrong Network — Tap to switch to BSC</span>';
+      }
+      if (onBSC) {
+        result = await walletProvider.request({ method: 'eth_call', params: [{ to: USDT_CONTRACT, data }, 'latest'] });
+      }
+    } catch (e) { console.warn('Provider balance fetch failed:', e); }
+  }
+
+  if (!result || result === '0x') {
+    try {
+      const resp = await fetch('/api/bsc-balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: connectedWallet })
+      });
+      const json = await resp.json();
+      if (json.result) result = json.result;
+    } catch (e) { console.warn('Server balance fetch failed:', e); }
+  }
+
+  if (!result || result === '0x') {
+    try {
+      const rpcs = [BSC_RPC, 'https://bsc-dataseed1.defibit.io/', 'https://bsc-dataseed1.ninicoin.io/', 'https://bsc.publicnode.com'];
+      for (const rpc of rpcs) {
+        try {
+          const resp = await fetch(rpc, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_call', params: [{ to: USDT_CONTRACT, data }, 'latest'] })
+          });
+          const json = await resp.json();
+          if (json.result && json.result !== '0x') { result = json.result; break; }
+        } catch(e) {}
+      }
+    } catch (e) {}
+  }
+
+  if (result && result !== '0x') {
+    try {
+      const balWei = BigInt(result);
+      const balNum = Number(balWei) / 1e18;
+      document.getElementById('walletBalanceAmt').textContent = balNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } catch(e) {
+      document.getElementById('walletBalanceAmt').textContent = '-.--';
+    }
+  } else {
+    document.getElementById('walletBalanceAmt').textContent = '0.00';
+  }
+}
+
+(async function fetchPremiumMode() {
+  try {
+    const resp = await fetch('/api/premium/mode');
+    const data = await resp.json();
+    premiumStatus.premium_mode = data.premium_mode || 'usdt';
+  } catch(e) {}
+})();
+
+(function autoReconnectWallet() {
+  const savedKey = localStorage.getItem('tordai_wallet');
+  if (!savedKey) return;
+  const tryReconnect = () => {
+    const providers = getAvailableProviders();
+    if (providers.length === 0) return;
+    const match = providers.find(p => p.key === savedKey) || providers[0];
+    walletProvider = match.provider;
+    walletProvider.request({ method: 'eth_accounts' }).then(accounts => {
+      if (accounts && accounts.length > 0) {
+        connectedWallet = accounts[0];
+        updateWalletUI(match.key);
+        fetchTokenBalance();
+        loadSavedAvatar();
+        fetchPremiumStatus();
+        walletProvider.on && walletProvider.on('accountsChanged', (accs) => {
+          if (!accs || accs.length === 0) { disconnectWallet(); return; }
+          connectedWallet = accs[0];
+          updateWalletUI();
+          fetchTokenBalance();
+          loadSavedAvatar();
+          registerPremium();
+        });
+        walletProvider.on && walletProvider.on('chainChanged', (newChainId) => {
+          if (newChainId !== BSC_CHAIN_ID) { switchToBSC(); }
+          fetchTokenBalance();
+        });
+      }
+    }).catch(() => {});
+  };
+  if (typeof window.ethereum !== 'undefined') tryReconnect();
+  else {
+    window.addEventListener('ethereum#initialized', tryReconnect, { once: true });
+    setTimeout(tryReconnect, 1500);
+  }
+})();
+
+let MODELS = [
+  { id: 'auto', name: 'Auto (Smart Router)', desc: 'Automatically picks the best free model for your task — images, code, reasoning, or chat', tags: ['Image','Code','Reasoning','General'], rec: true, free: true, ctx: 0 },
+  { id: 'deepseek-chat', name: 'DeepSeek: Chat', desc: 'Fast, general-purpose chat model by DeepSeek via direct API', tags: ['General','Code'], free: true, ctx: 65536 },
+  { id: 'deepseek-reasoner', name: 'DeepSeek: R1 Reasoner', desc: 'Advanced reasoning model for complex analysis via direct API', tags: ['Reasoning'], free: true, ctx: 65536 },
+  { id: 'image', name: 'Image Generator', desc: 'Generate images from text prompts via Gemini', tags: ['Image'], free: true, ctx: 0 },
+];
+
+function detectModelTags(m) {
+  const n = (m.name + ' ' + m.desc + ' ' + m.id).toLowerCase();
+  const tags = [];
+  if (/\bimage\b|vision|vl\b|visual|multimodal/.test(n)) tags.push('Image');
+  if (/\bcod(e|ing|er)\b|program|develop/.test(n)) tags.push('Code');
+  if (/\breason|think|r1|chimera|o1|o3|chain.of.thought/.test(n)) tags.push('Reasoning');
+  if (tags.length === 0 || /general|instruct|chat/.test(n)) tags.push('General');
+  return tags;
+}
+
+function formatCtx(ctx) {
+  if (!ctx || ctx <= 0) return '';
+  if (ctx >= 1000000) return Math.round(ctx/1000) + 'K ctx';
+  if (ctx >= 1000) return Math.round(ctx/1000) + 'K ctx';
+  return ctx + ' ctx';
+}
+
+(async function loadModels() {
+  try {
+    const res = await fetch('/api/tordai/models');
+    if (!res.ok) return;
+    const data = await res.json();
+    const apiModels = (data.models || []).map(m => ({
+      id: m.id,
+      name: m.name.replace(/ \(free\)$/i, ''),
+      desc: (m.desc || '').substring(0, 120),
+      tags: detectModelTags(m),
+      free: m.free,
+      ctx: m.ctx || 0,
+      rec: false
+    }));
+    apiModels.sort((a, b) => (b.ctx || 0) - (a.ctx || 0));
+    const builtinIds = MODELS.map(m => m.id);
+    MODELS = [...MODELS, ...apiModels.filter(m => !builtinIds.includes(m.id))];
+    const fc = document.getElementById('freeCount');
+    const pc = document.getElementById('premiumCount');
+    const tc = document.getElementById('totalCount');
+    if (fc) fc.textContent = MODELS.filter(m => m.free).length;
+    if (pc) pc.textContent = MODELS.filter(m => !m.free).length;
+    if (tc) tc.textContent = MODELS.length + ' total';
+    renderModels();
+  } catch(e) { console.error('Failed to load models:', e); }
+})();
+
+const isApple = /iPhone|iPad|iPod|Macintosh|Mac OS/i.test(navigator.userAgent);
+const aiAvatar = isApple ? '/logotrans.png' : '/ai-avatar.webm';
+const aiAvatarHTML = isApple
+  ? '<img src="/logotrans.png" alt="T" />'
+  : '<video src="/ai-avatar.webm" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:contain"></video>';
+
+function getChatDisplayName(role) {
+  if (role === 'assistant') return 'TORD AI';
+  if (connectedWallet) return connectedWallet.slice(0, 4) + '...' + connectedWallet.slice(-5);
+  return 'You';
+}
+
+function getUserAvatarHTML() {
+  if (connectedWallet) {
+    const saved = localStorage.getItem('tordai_avatar_' + connectedWallet.toLowerCase());
+    if (saved) return '<img src="' + getAvatarUrl(saved) + '" alt="U" style="border-radius:8px" />';
+    return '<img src="' + getAvatarUrl(connectedWallet.slice(2, 10)) + '" alt="U" style="border-radius:8px" />';
+  }
+  return '<svg width="26" height="26" viewBox="0 0 512 512"><defs><linearGradient id="avgG2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#d4891a"/></linearGradient></defs><circle cx="256" cy="256" r="256" fill="url(#avgG2)"/><circle cx="256" cy="200" r="80" fill="#fff"/><path d="M256 300c-88 0-160 40-160 100v12h320v-12c0-60-72-100-160-100z" fill="#fff"/></svg>';
+}
+
+(function setWelcomeLogo() {
+  const el = document.getElementById('welcomeLogo');
+  if (!el) return;
+  if (isApple) {
+    el.innerHTML = '<img src="/logotrans.png" alt="TORD" />';
+  } else {
+    el.innerHTML = '<video src="/logo-anim.webm" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:contain"></video>';
+  }
+})();
+
+(function initTopbarAvatar() {
+  const topbar = document.getElementById('topbarAvatar');
+  if (topbar) topbar.innerHTML = '<svg width="22" height="22" viewBox="0 0 512 512"><defs><linearGradient id="avgG3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#d4891a"/></linearGradient></defs><circle cx="256" cy="256" r="256" fill="url(#avgG3)"/><circle cx="256" cy="200" r="80" fill="#fff"/><path d="M256 300c-88 0-160 40-160 100v12h320v-12c0-60-72-100-160-100z" fill="#fff"/></svg>';
+})();
+
+let selectedModel = 'auto';
+let currentTab = 'free';
+let chats = [];
+let currentChatId = null;
+let isStreaming = false;
+let premiumStatus = { registered: false, token_allocation: 0, tokens_used: 0, tokens_remaining: 0, next_reset: null, premium_mode: 'usdt', badge: null, badge_config: null };
+
+function getPremiumTokenName() {
+  return premiumStatus.premium_mode === 'tord' ? '$TORD' : 'USDT';
+}
+
+function getPremiumRequireMsg() {
+  const token = getPremiumTokenName();
+  return 'Connect your wallet and hold ' + token + ' to use premium models. Free models are available without a wallet.';
+}
+
+function getPremiumBuyMsg() {
+  const token = getPremiumTokenName();
+  return premiumStatus.premium_mode === 'tord'
+    ? 'Not enough $TORD tokens. Hold $50 worth of $TORD to earn $1 premium credit.'
+    : 'Not enough USDT. Hold $50 USDT to earn $1 premium credit.';
+}
+
+async function registerPremium() {
+  if (!connectedWallet) return;
+  try {
+    const resp = await fetch('/api/premium/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: connectedWallet })
+    });
+    const data = await resp.json();
+    if (!resp.ok) return;
+    premiumStatus = { registered: true, ...data, premium_mode: data.premium_mode || 'usdt', badge: data.badge || null, badge_config: data.badge_config || null };
+    updatePremiumUI();
+  } catch(e) { console.error('Premium register error:', e); }
+}
+
+async function fetchPremiumStatus() {
+  if (!connectedWallet) return;
+  try {
+    const resp = await fetch('/api/premium/status?wallet=' + connectedWallet.toLowerCase());
+    const data = await resp.json();
+    if (!resp.ok) return;
+    premiumStatus = { ...data, premium_mode: data.premium_mode || 'usdt', badge: data.badge || null, badge_config: data.badge_config || null };
+    updatePremiumUI();
+  } catch(e) { console.error('Premium status error:', e); }
+}
+
+async function usePremiumToken(cost) {
+  if (!connectedWallet) return false;
+  try {
+    const resp = await fetch('/api/premium/use', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wallet: connectedWallet, cost })
+    });
+    const data = await resp.json();
+    if (!resp.ok) return false;
+    premiumStatus.tokens_used = data.tokens_used;
+    premiumStatus.tokens_remaining = data.tokens_remaining;
+    updatePremiumUI();
+    return true;
+  } catch(e) { return false; }
+}
+
+function updatePremiumUI() {
+  updateTopbarBadge();
+}
+
+function getModelCost(modelId) {
+  const model = MODELS.find(m => m.id === modelId);
+  if (!model || model.free) return 0;
+  const p = model.pricing || {};
+  const promptCost = parseFloat(p.prompt || 0);
+  const completionCost = parseFloat(p.completion || 0);
+  return Math.max(0.001, (promptCost + completionCost) * 500);
+}
+
+function canUsePremiumModel(modelId) {
+  const model = MODELS.find(m => m.id === modelId);
+  if (!model) return true;
+  if (model.free) return true;
+  if (!connectedWallet || !premiumStatus.registered) return false;
+  return premiumStatus.tokens_remaining > 0;
+}
+let uploadedFiles = [];
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const IMAGE_TYPES = ['image/png','image/jpeg','image/gif','image/webp','image/svg+xml','image/bmp'];
+const TEXT_TYPES = ['text/','application/json','application/xml','application/javascript','application/typescript','application/x-python','application/x-sh','application/sql','application/csv','application/x-yaml'];
+
+function isTextFile(file) {
+  if (TEXT_TYPES.some(t => file.type.startsWith(t) || file.type === t)) return true;
+  const ext = file.name.split('.').pop().toLowerCase();
+  return ['txt','md','js','jsx','ts','tsx','py','html','css','json','xml','csv','sql','sh','bash','yml','yaml','toml','ini','cfg','conf','log','env','sol','rs','go','java','c','cpp','h','hpp','rb','php','swift','kt','dart','r','lua','pl','scala','zig','vue','svelte','astro','prisma','graphql','proto','makefile','dockerfile'].includes(ext);
+}
+
+function isImageFile(file) {
+  if (IMAGE_TYPES.includes(file.type)) return true;
+  const ext = file.name.split('.').pop().toLowerCase();
+  return ['png','jpg','jpeg','gif','webp','svg','bmp'].includes(ext);
+}
+
+function getFileIcon(file) {
+  if (isImageFile(file)) return '🖼️';
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (['js','jsx','ts','tsx'].includes(ext)) return '📜';
+  if (['py'].includes(ext)) return '🐍';
+  if (['sol'].includes(ext)) return '⛓️';
+  if (['json','xml','yaml','yml'].includes(ext)) return '📋';
+  if (['html','css'].includes(ext)) return '🌐';
+  if (['md','txt'].includes(ext)) return '📝';
+  if (['pdf'].includes(ext)) return '📄';
+  if (['csv','sql'].includes(ext)) return '🗃️';
+  return '📎';
+}
+
+function toggleSidebarCollapse() {
+  document.body.classList.toggle('sidebar-collapsed');
+  const collapsed = document.body.classList.contains('sidebar-collapsed');
+  document.getElementById('topbarToggle').style.display = collapsed ? 'flex' : 'none';
+}
+
+function handleFileSelect(files) {
+  for (const file of files) {
+    if (uploadedFiles.length >= 5) break;
+    if (file.size > MAX_FILE_SIZE) {
+      alert('File "' + file.name + '" exceeds 20MB limit.');
+      continue;
+    }
+    const reader = new FileReader();
+    if (isImageFile(file)) {
+      reader.onload = (e) => {
+        uploadedFiles.push({ name: file.name, data: e.target.result, type: 'image', fileType: file.type });
+        renderFilePreviews();
+      };
+      reader.readAsDataURL(file);
+    } else if (isTextFile(file)) {
+      reader.onload = (e) => {
+        uploadedFiles.push({ name: file.name, data: e.target.result, type: 'text', fileType: file.type });
+        renderFilePreviews();
+      };
+      reader.readAsText(file);
+    } else {
+      reader.onload = (e) => {
+        uploadedFiles.push({ name: file.name, data: e.target.result, type: 'binary', fileType: file.type });
+        renderFilePreviews();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  document.getElementById('fileInput').value = '';
+}
+
+function removeFile(index) {
+  uploadedFiles.splice(index, 1);
+  renderFilePreviews();
+}
+
+function renderFilePreviews() {
+  const container = document.getElementById('imagePreviews');
+  container.innerHTML = '';
+  uploadedFiles.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'img-preview';
+    if (f.type === 'image') {
+      div.innerHTML = '<img src="' + f.data + '" alt="' + esc(f.name) + '" /><button class="remove-img" onclick="removeFile(' + i + ')">×</button>';
+    } else {
+      div.innerHTML = '<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text2);max-width:140px"><span>' + getFileIcon(f) + '</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(f.name) + '</span></div><button class="remove-img" onclick="removeFile(' + i + ')">×</button>';
+    }
+    container.appendChild(div);
+  });
+}
+
+let dragCounter = 0;
+document.addEventListener('dragenter', (e) => {
+  e.preventDefault();
+  dragCounter++;
+  if (e.dataTransfer.types.includes('Files')) document.getElementById('dragOverlay').classList.add('active');
+});
+document.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  dragCounter--;
+  if (dragCounter <= 0) { dragCounter = 0; document.getElementById('dragOverlay').classList.remove('active'); }
+});
+document.addEventListener('dragover', (e) => { e.preventDefault(); });
+document.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dragCounter = 0;
+  document.getElementById('dragOverlay').classList.remove('active');
+  if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files);
+});
+
+const inputBox = document.getElementById('inputBox');
+if (inputBox) {
+  inputBox.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.kind === 'file') {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) handleFileSelect([file]);
+      }
+    }
+  });
+}
+
+function toggleDropdown() {
+  document.getElementById('modelDropdown').classList.toggle('open');
+}
+function closeDropdown() {
+  document.getElementById('modelDropdown').classList.remove('open');
+}
+
+function renderModels(filter = '') {
+  const list = document.getElementById('modelList');
+  list.innerHTML = '';
+  const filtered = MODELS.filter(m => {
+    const matchTab = currentTab === 'free' ? m.free : !m.free;
+    const matchSearch = !filter || m.name.toLowerCase().includes(filter.toLowerCase()) || m.desc.toLowerCase().includes(filter.toLowerCase());
+    return matchTab && matchSearch;
+  });
+  filtered.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'md-item' + (m.id === selectedModel ? ' selected' : '');
+    let tagsHtml = m.tags.map(t => {
+      const cls = t === 'Image' ? 'tag-image' : t === 'Code' ? 'tag-code' : t === 'Reasoning' ? 'tag-reasoning' : 'tag-general';
+      return '<span class="' + cls + '">' + t + '</span>';
+    }).join('');
+    const ctxStr = formatCtx(m.ctx);
+    const premLocked = !m.free && !canUsePremiumModel(m.id);
+    const lockIcon = premLocked ? '<span style="color:#f5a623;font-size:10px;margin-left:4px" title="Requires premium tokens">&#128274;</span>' : '';
+    div.innerHTML = '<div class="md-name">' + esc(m.name) + (m.rec ? ' <span class="rec">Recommended</span>' : '') + (m.free ? '<span class="tag-free">FREE</span>' : '') + lockIcon + '</div><div class="md-desc">' + esc(m.desc) + (ctxStr ? ' <span style="color:#666;font-size:10px">' + ctxStr + '</span>' : '') + '</div><div class="md-tags">' + tagsHtml + '</div>';
+    div.onclick = () => selectModel(m.id, m.name);
+    list.appendChild(div);
+  });
+}
+
+function filterModels() {
+  renderModels(document.getElementById('modelSearch').value);
+}
+
+function filterTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.md-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderModels(document.getElementById('modelSearch').value);
+}
+
+function shortenModelName(name, maxLen) {
+  let s = name.split(':').pop().trim().split('(')[0].trim();
+  s = s.replace(/\s*preview\s*/gi, 'P').replace(/\s*experimental\s*/gi, 'E').replace(/\s*instruct\s*/gi, 'I');
+  s = s.replace(/\s*thinking\s*/gi, 'T').replace(/\s*flash\s*/gi, 'F').replace(/\s*latest\s*/gi, '');
+  s = s.replace(/\s{2,}/g, ' ').trim();
+  if (s.length > maxLen) s = s.substring(0, maxLen - 1).trim() + '…';
+  return s;
+}
+
+function selectModel(id, name) {
+  const m = MODELS.find(x => x.id === id);
+  if (m && !m.free && !connectedWallet) {
+    showBuyTordAlert(getPremiumRequireMsg());
+    return;
+  }
+  selectedModel = id;
+  const label = id === 'auto' ? 'Auto' : shortenModelName(name, 16);
+  document.getElementById('currentModelLabel').textContent = label;
+  closeDropdown();
+  renderModels();
+  updateModeInfoBar(id);
+}
+
+function updateModeInfoBar(id) {
+  const m = MODELS.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('modeInfoName').textContent = m.name;
+  const tierEl = document.getElementById('modeInfoTier');
+  tierEl.textContent = m.free ? 'FREE' : 'PREMIUM';
+  tierEl.className = 'mode-tag ' + (m.free ? 'free' : 'premium');
+  let provider = 'OpenRouter';
+  if (id === 'auto') provider = 'DeepSeek + OpenRouter';
+  else if (id === 'deepseek-chat' || id === 'deepseek-reasoner') provider = 'DeepSeek API';
+  else if (id === 'image') provider = 'Gemini via OpenRouter';
+  document.getElementById('modeInfoProvider').textContent = provider;
+  const tagsEl = document.getElementById('modeInfoTags');
+  let tagsHtml = '';
+  if (m.tags && m.tags.length) {
+    m.tags.forEach(t => { tagsHtml += '<span class="mode-cap">' + t + '</span>'; });
+  }
+  if (m.ctx && m.ctx > 0) {
+    tagsHtml += '<span class="mode-cap">' + (m.ctx >= 1000 ? Math.round(m.ctx/1000) + 'K ctx' : m.ctx + ' ctx') + '</span>';
+  }
+  tagsEl.innerHTML = tagsHtml;
+}
+
+function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+let modeInfoLocked = false;
+let modeHoverTimeout = null;
+function toggleModeInfo() {
+  modeInfoLocked = !modeInfoLocked;
+  const bar = document.getElementById('modeInfoBar');
+  const btn = document.getElementById('modeToggleBtn');
+  if (modeInfoLocked) {
+    bar.classList.add('show');
+    btn.classList.add('open');
+  } else {
+    bar.classList.remove('show');
+    btn.classList.remove('open');
+  }
+}
+function hoverModeInfo(enter) {
+  if (modeInfoLocked) return;
+  const bar = document.getElementById('modeInfoBar');
+  if (enter) {
+    clearTimeout(modeHoverTimeout);
+    bar.classList.add('show');
+  } else {
+    modeHoverTimeout = setTimeout(() => { bar.classList.remove('show'); }, 300);
+  }
+}
+
+function autoGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 150) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+function quickAsk(text) { document.getElementById('chatInput').value = text; sendMessage(); }
+
+function copyExample(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    }, 1500);
+  });
+}
+
+function newChat() {
+  currentChatId = null;
+  document.getElementById('welcome').style.display = 'flex';
+  document.getElementById('messagesBox').style.display = 'none';
+  document.getElementById('messagesBox').innerHTML = '';
+  document.getElementById('chatInput').value = '';
+  renderHistory();
+  closeSidebar();
+}
+
+function createChat(firstMsg) {
+  const id = 'c_' + Date.now();
+  const title = firstMsg.substring(0, 50) + (firstMsg.length > 50 ? '...' : '');
+  const chat = { id, title, messages: [], created_at: Date.now(), updated_at: Date.now() };
+  chats.unshift(chat);
+  if (chats.length > 50) chats = chats.slice(0, 50);
+  currentChatId = id;
+  fetch('/api/tordai/chats', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, title }) }).catch(() => {});
+  renderHistory();
+  return chat;
+}
+
+async function loadChat(id) {
+  try {
+    const res = await fetch('/api/tordai/chats/' + id);
+    if (!res.ok) return;
+    const chat = await res.json();
+    const idx = chats.findIndex(c => c.id === id);
+    if (idx >= 0) chats[idx].messages = chat.messages;
+    currentChatId = id;
+    document.getElementById('welcome').style.display = 'none';
+    const mb = document.getElementById('messagesBox');
+    mb.style.display = 'flex';
+    mb.innerHTML = '';
+    (chat.messages || []).forEach(m => appendMsg(m.role, m.content, false));
+    renderHistory();
+    closeSidebar();
+  } catch (err) {
+    console.error('Failed to load chat:', err);
+  }
+}
+
+function deleteChat(id, e) {
+  e.stopPropagation();
+  chats = chats.filter(c => c.id !== id);
+  fetch('/api/tordai/chats/' + id, { method: 'DELETE' }).catch(() => {});
+  if (currentChatId === id) newChat();
+  renderHistory();
+}
+
+let saveTimeout = null;
+function saveChats() {
+  const chat = chats.find(c => c.id === currentChatId);
+  if (!chat) return;
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    fetch('/api/tordai/chats/' + chat.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chat.messages, title: chat.title })
+    }).catch(() => {});
+  }, 500);
+}
+
+function renderHistory() {
+  const list = document.getElementById('chatHistoryList');
+  list.innerHTML = '';
+  chats.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'history-item' + (c.id === currentChatId ? ' active' : '');
+    div.innerHTML = '<span class="h-title">' + esc(c.title) + '</span><button class="h-del" onclick="deleteChat(\'' + c.id + '\',event)">×</button>';
+    div.onclick = () => loadChat(c.id);
+    list.appendChild(div);
+  });
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function fmt(text) {
+  text = text.replace(/```(\w*)\n([\s\S]*?)```/g, (_, l, code) => '<pre><code>' + esc(code) + '</code></pre>');
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+
+function appendMsg(role, content, save = true) {
+  const mb = document.getElementById('messagesBox');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  const avatar = role === 'assistant' ? aiAvatarHTML : getUserAvatarHTML();
+  const name = getChatDisplayName(role);
+  const isImg = content.startsWith('![') || content.startsWith('<img');
+  div.innerHTML = '<div class="msg-avatar">' + avatar + '</div><div class="msg-body"><div class="msg-name">' + name + '</div><div class="msg-content">' + (isImg ? content : fmt(content)) + '</div></div>';
+  mb.appendChild(div);
+  mb.parentElement.scrollTop = mb.parentElement.scrollHeight;
+  if (save && currentChatId) {
+    const chat = chats.find(c => c.id === currentChatId);
+    if (chat) { chat.messages.push({ role, content }); saveChats(); }
+  }
+  return div;
+}
+
+function appendMsgHtml(role, htmlContent, save = true) {
+  const mb = document.getElementById('messagesBox');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  const avatar = role === 'assistant' ? aiAvatarHTML : getUserAvatarHTML();
+  const name = getChatDisplayName(role);
+  div.innerHTML = '<div class="msg-avatar">' + avatar + '</div><div class="msg-body"><div class="msg-name">' + name + '</div><div class="msg-content">' + htmlContent + '</div></div>';
+  mb.appendChild(div);
+  mb.parentElement.scrollTop = mb.parentElement.scrollHeight;
+  if (save && currentChatId) {
+    const chat = chats.find(c => c.id === currentChatId);
+    if (chat) { chat.messages.push({ role, content: htmlContent }); saveChats(); }
+  }
+  return div;
+}
+
+function showTyping() {
+  const mb = document.getElementById('messagesBox');
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'typingMsg';
+  div.innerHTML = '<div class="msg-avatar">' + aiAvatarHTML + '</div><div class="msg-body"><div class="msg-name" style="color:var(--gold)">TORD AI</div><div class="msg-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>';
+  mb.appendChild(div);
+  mb.parentElement.scrollTop = mb.parentElement.scrollHeight;
+}
+function removeTyping() { const el = document.getElementById('typingMsg'); if (el) el.remove(); }
+
+function detectIntent(text) {
+  if (/\b(create|generate|make|draw|design|image of|picture of|illustration|logo|banner|artwork|render)\b/i.test(text) && !/\b(code|write|explain|how|what|why|analyze|debug|fix)\b/i.test(text)) return 'image';
+  if (/\b(explain|analyze|compare|reason|think|why|evaluate|assess)\b/i.test(text)) return 'reasoning';
+  return 'chat';
+}
+
+async function sendMessage() {
+  if (isStreaming) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text && uploadedFiles.length === 0) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  const files = [...uploadedFiles];
+  uploadedFiles = [];
+  renderFilePreviews();
+
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('messagesBox').style.display = 'flex';
+  document.getElementById('chatArea').scrollTop = 0;
+  if (!currentChatId) createChat(text || 'File analysis');
+
+  const hasImages = files.some(f => f.type === 'image');
+  const hasTextFiles = files.some(f => f.type === 'text');
+
+  let userContent = text;
+  if (files.length > 0) {
+    let attachHtml = '';
+    files.forEach(f => {
+      if (f.type === 'image') {
+        attachHtml += '<img src="' + f.data + '" style="max-width:120px;border-radius:8px;margin:4px" />';
+      } else {
+        attachHtml += '<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text2);margin:4px">' + getFileIcon(f) + ' ' + esc(f.name) + '</div>';
+      }
+    });
+    userContent = (text ? esc(text) + '<br>' : '') + attachHtml;
+    appendMsgHtml('user', userContent);
+  } else {
+    appendMsg('user', text);
+  }
+
+  let model = selectedModel;
+  let intent = 'chat';
+  if (model === 'auto') {
+    intent = detectIntent(text);
+    if (intent === 'image') model = 'image';
+    else if (intent === 'reasoning') model = 'deepseek-reasoner';
+    else model = 'deepseek-chat';
+  } else if (model === 'image') {
+    intent = 'image';
+  } else if (model === 'deepseek-reasoner') {
+    intent = 'reasoning';
+  }
+
+  if (hasImages && intent !== 'image') {
+    pendingAction = { text, files, model, intent };
+    showImageActionPicker(text, files);
+    return;
+  }
+
+  if (intent === 'image') {
+    if (!connectedWallet) {
+      await handleImage(text, files.filter(f => f.type === 'image'), '1024x1024', false);
+      return;
+    }
+    pendingAction = { text, files, model, intent };
+    showImageSettingsPanel(text, files.filter(f => f.type === 'image'), 'generate');
+    return;
+  }
+
+  await executeIntent(text, files, model, intent);
+}
+
+let pendingAction = null;
+
+function showImageActionPicker(text, files) {
+  const mb = document.getElementById('messagesBox');
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'actionPicker';
+  const imageFiles = files.filter(f => f.type === 'image');
+  div.innerHTML = '<div class="msg-avatar">' + aiAvatarHTML + '</div><div class="msg-body"><div class="msg-name" style="color:var(--gold)">TORD AI</div><div class="msg-content">' +
+    '<div class="action-picker">' +
+    '<div class="action-picker-title">' + (currentLang === 'cn' ? ('我看到你附加了' + (imageFiles.length > 1 ? imageFiles.length + '张图片' : '一张图片') + '。你想让我做什么？') : ('I see you attached ' + (imageFiles.length > 1 ? imageFiles.length + ' images' : 'an image') + '. What would you like me to do?')) + '</div>' +
+    '<div class="action-picker-grid">' +
+    '<button class="action-pick-btn" onclick="pickAction(\'edit\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span>' + (currentLang === 'cn' ? '编辑图像' : 'Edit Image') + '</span><span class="action-desc">' + (currentLang === 'cn' ? '修改附加的图像' : 'Modify the attached image') + '</span></button>' +
+    '<button class="action-pick-btn" onclick="pickAction(\'generate\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>' + (currentLang === 'cn' ? '生成新图像' : 'Generate New') + '</span><span class="action-desc">' + (currentLang === 'cn' ? '根据提示创建新图像' : 'Create a new image from prompt') + '</span></button>' +
+    '<button class="action-pick-btn" onclick="pickAction(\'analyze\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>' + (currentLang === 'cn' ? '分析图像' : 'Analyze Image') + '</span><span class="action-desc">' + (currentLang === 'cn' ? '描述或理解图像' : 'Describe or understand the image') + '</span></button>' +
+    '<button class="action-pick-btn" onclick="pickAction(\'chat\')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>' + (currentLang === 'cn' ? '聊天讨论' : 'Chat About It') + '</span><span class="action-desc">' + (currentLang === 'cn' ? '与AI讨论图像' : 'Discuss the image with AI') + '</span></button>' +
+    '</div></div>' +
+    '</div></div>';
+  mb.appendChild(div);
+  mb.parentElement.scrollTop = mb.parentElement.scrollHeight;
+}
+
+async function pickAction(action) {
+  const picker = document.getElementById('actionPicker');
+  if (picker) picker.remove();
+  if (!pendingAction) return;
+  const { text, files, model, intent } = pendingAction;
+
+  if (action === 'edit' || action === 'generate') {
+    if (!connectedWallet) {
+      pendingAction = null;
+      await handleImage(text, action === 'edit' ? files : [], '1024x1024', false);
+      return;
+    }
+    showImageSettingsPanel(text, action === 'edit' ? files : [], action);
+  } else if (action === 'analyze' || action === 'chat') {
+    pendingAction = null;
+    let m = model;
+    if (m === 'auto' || m === 'deepseek-chat' || m === 'deepseek-reasoner') m = 'vision';
+    await executeIntent(text, files, m, 'chat');
+  }
+}
+
+let selectedImgSize = '1024x1024';
+let selectedImgTheme = 'None';
+let imgSettingsMode = 'free';
+
+function showImageSettingsPanel(prompt, files, action) {
+  let existing = document.querySelector('.img-settings-overlay');
+  if (existing) existing.remove();
+
+  if (!connectedWallet) imgSettingsMode = 'free';
+
+  const sizes = [
+    { v: '512x512', label: '512x512', sub: 'Square' },
+    { v: '1024x1024', label: '1024x1024', sub: 'Square HD' },
+    { v: '1024x1792', label: '1024x1792', sub: 'Portrait' },
+    { v: '1792x1024', label: '1792x1024', sub: 'Landscape' },
+    { v: '1920x1080', label: '1920x1080', sub: 'Full HD' },
+    { v: '1280x720', label: '1280x720', sub: 'HD 720' }
+  ];
+
+  const themes = [
+    { v: 'None', icon: '✕' },
+    { v: 'Crypto', icon: '₿' },
+    { v: 'Blockchain', icon: '⛓' },
+    { v: 'Elegance', icon: '✦' },
+    { v: 'Professional', icon: '💼' },
+    { v: 'Futuristic', icon: '🚀' },
+    { v: 'Minimalist', icon: '◻' },
+    { v: 'Neon', icon: '💡' },
+    { v: 'Fantasy', icon: '🐉' },
+    { v: 'Realistic', icon: '📷' },
+    { v: 'Anime', icon: '🎌' },
+    { v: 'Pixel Art', icon: '👾' }
+  ];
+
+  const overlay = document.createElement('div');
+  overlay.className = 'img-settings-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) closeImageSettings(); };
+
+  const actionLabel = action === 'edit' ? (currentLang === 'cn' ? '编辑图像' : 'Edit Image') : (currentLang === 'cn' ? '生成图像' : 'Generate Image');
+  const freeNote = !connectedWallet ? '<div style="font-size:11px;color:var(--text3);margin:8px 0 4px;padding:6px 10px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.12);border-radius:8px">' + (currentLang === 'cn' ? '免费模式 — 使用免费AI模型生成。连接钱包解锁高级模型。' : 'Free mode — Using free AI models. Connect wallet to unlock premium models.') + '</div>' : '';
+
+  overlay.innerHTML = '<div class="img-settings-panel">' +
+    '<div class="isp-header"><div class="isp-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> ' + (currentLang === 'cn' ? '图像设置' : 'Image Settings') + '</div>' +
+    '<div class="isp-tabs"><button class="isp-tab' + (imgSettingsMode === 'free' ? ' active' : '') + '" onclick="setImgMode(\'free\')">' + (currentLang === 'cn' ? '免费' : 'Free') + '</button><button class="isp-tab' + (imgSettingsMode === 'premium' ? ' active' : '') + '" onclick="setImgMode(\'premium\')">' + (currentLang === 'cn' ? '高级' : 'Premium') + '</button></div></div>' +
+    freeNote +
+    '<div class="isp-prompt"><b>' + (currentLang === 'cn' ? '提示:' : 'Prompt:') + '</b> ' + (prompt || (currentLang === 'cn' ? '未提供提示' : 'No prompt provided')) + '</div>' +
+    '<div class="isp-label">' + (currentLang === 'cn' ? '尺寸' : 'Size') + '</div>' +
+    '<div class="isp-sizes">' + sizes.map(s =>
+      '<button class="isp-size' + (selectedImgSize === s.v ? ' active' : '') + '" data-size="' + s.v + '" onclick="selectImgSize(\'' + s.v + '\')">' + s.label + '<small>' + s.sub + '</small></button>'
+    ).join('') + '</div>' +
+    '<div class="isp-label">' + (currentLang === 'cn' ? '主题 / 风格' : 'Theme / Style') + '</div>' +
+    '<div class="isp-themes">' + themes.map(t =>
+      '<button class="isp-theme' + (selectedImgTheme === t.v ? ' active' : '') + '" data-theme="' + t.v + '" onclick="selectImgTheme(\'' + t.v + '\')">' + t.icon + ' ' + t.v + '</button>'
+    ).join('') + '</div>' +
+    '<div class="isp-actions">' +
+    '<button class="isp-gen-btn" onclick="confirmImageGenerate()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg> ' + actionLabel + '</button>' +
+    '<button class="isp-cancel-btn" onclick="closeImageSettings()">' + (currentLang === 'cn' ? '取消' : 'Cancel') + '</button>' +
+    '</div></div>';
+
+  document.body.appendChild(overlay);
+}
+
+function selectImgSize(size) {
+  selectedImgSize = size;
+  document.querySelectorAll('.isp-size').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-size') === size);
+  });
+}
+
+function selectImgTheme(theme) {
+  selectedImgTheme = theme;
+  document.querySelectorAll('.isp-theme').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-theme') === theme);
+  });
+}
+
+function setImgMode(mode) {
+  if (mode === 'premium' && !connectedWallet) {
+    showBuyTordAlert(currentLang === 'cn' ? '请先连接钱包以使用高级模型。高级模型提供更高质量的图像生成。' : 'Please connect your wallet first to use premium models. Premium models provide higher quality image generation.');
+    return;
+  }
+  imgSettingsMode = mode;
+  document.querySelectorAll('.isp-tab').forEach(el => {
+    const tabText = el.textContent.trim().toLowerCase();
+    el.classList.toggle('active', tabText === mode || (mode === 'free' && (tabText === 'free' || tabText === '免费')) || (mode === 'premium' && (tabText === 'premium' || tabText === '高级')));
+  });
+}
+
+function closeImageSettings() {
+  const overlay = document.querySelector('.img-settings-overlay');
+  if (overlay) overlay.remove();
+  pendingAction = null;
+}
+
+async function confirmImageGenerate() {
+  if (imgSettingsMode === 'premium') {
+    if (!connectedWallet) {
+      showBuyTordAlert(currentLang === 'cn' ? '请先连接钱包以使用高级模型。' : 'Please connect your wallet to use premium models.');
+      return;
+    }
+    if (!premiumStatus.registered || premiumStatus.tokens_remaining <= 0) {
+      showBuyTordAlert(getPremiumBuyMsg());
+      return;
+    }
+  }
+
+  const overlay = document.querySelector('.img-settings-overlay');
+  if (overlay) overlay.remove();
+  if (!pendingAction) return;
+  const { text, files } = pendingAction;
+  pendingAction = null;
+
+  let finalPrompt = text || 'Generate an image';
+  if (selectedImgTheme && selectedImgTheme !== 'None') {
+    finalPrompt += ', ' + selectedImgTheme.toLowerCase() + ' style';
+  }
+
+  await handleImage(finalPrompt, files.filter(f => f.type === 'image'), selectedImgSize, imgSettingsMode === 'premium');
+}
+
+function showBuyTordAlert(message) {
+  let existing = document.querySelector('.tord-buy-alert-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'tord-buy-alert-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  const isTord = premiumStatus.premium_mode === 'tord';
+  const title = isTord ? '$TORD Tokens Required' : 'USDT Holdings Required';
+  const btnLabel = isTord ? 'Buy $TORD' : 'Get USDT';
+  const rateInfo = '<div style="font-size:11px;color:var(--text3);margin-bottom:14px;padding:8px 12px;background:rgba(245,166,35,0.08);border-radius:8px;border:1px solid rgba(245,166,35,0.15)">Rate: $50 worth of ' + (isTord ? '$TORD' : 'USDT') + ' = $1 premium credit (resets every 24h)</div>';
+
+  overlay.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--gold);border-radius:16px;padding:28px 32px;max-width:420px;width:100%;text-align:center;animation:slideUp .25s ease">' +
+    '<div style="font-size:40px;margin-bottom:12px">&#128176;</div>' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:700;color:var(--gold);margin-bottom:10px">' + title + '</div>' +
+    '<div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">' + message + '</div>' +
+    rateInfo +
+    '<div style="display:flex;gap:10px;justify-content:center">' +
+    '<button onclick="window.open(\'https://pancakeswap.finance/swap\',\'_blank\')" style="padding:10px 22px;border-radius:10px;border:none;background:var(--gold);color:#000;font-size:13px;font-weight:700;font-family:Space Grotesk,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg> ' + btnLabel + '</button>' +
+    '<button onclick="this.closest(\'.tord-buy-alert-overlay\').remove()" style="padding:10px 22px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;font-weight:500;font-family:Space Grotesk,sans-serif;cursor:pointer">Close</button>' +
+    '</div></div>';
+
+  document.body.appendChild(overlay);
+}
+
+async function executeIntent(text, files, model, intent) {
+  const modelObj = MODELS.find(m => m.id === model);
+  const isPremiumModel = modelObj && !modelObj.free;
+  if (isPremiumModel && !canUsePremiumModel(model)) {
+    if (!connectedWallet) {
+      showBuyTordAlert(getPremiumRequireMsg());
+    } else {
+      showBuyTordAlert(getPremiumBuyMsg());
+    }
+    return;
+  }
+
+  if (intent === 'image') {
+    await handleImage(text, files.filter(f => f.type === 'image'));
+  } else {
+    await handleChat(text, model, files);
+  }
+
+  if (isPremiumModel && connectedWallet && premiumStatus.registered) {
+    const cost = getModelCost(model);
+    if (cost > 0) await usePremiumToken(cost);
+  }
+}
+
+async function handleChat(text, model, files = []) {
+  isStreaming = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping();
+
+  const chat = chats.find(c => c.id === currentChatId);
+  const langInstruction = currentLang === 'cn' ? ' Always respond in Chinese (中文). All your replies must be in Chinese unless the user explicitly asks for another language.' : ' Respond in the same language the user writes in. If the user writes in English, reply in English. If they write in Chinese, reply in Chinese.';
+  const msgs = [{ role: 'system', content: 'You are TORD AI, a powerful AI assistant by Tord Labs. You help with coding, DeFi, crypto analysis, smart contracts, and general knowledge. Be concise, helpful, and knowledgeable.' + langInstruction }];
+  if (chat) {
+    chat.messages.slice(-12).forEach(m => {
+      if (m.role === 'user' || m.role === 'assistant') msgs.push({ role: m.role, content: m.content });
+    });
+  }
+
+  const imageFiles = files.filter(f => f.type === 'image');
+  const textFiles = files.filter(f => f.type === 'text');
+
+  if (imageFiles.length > 0) {
+    let fileContext = '';
+    if (textFiles.length > 0) {
+      fileContext = textFiles.map(f => '\n\n--- File: ' + f.name + ' ---\n' + f.data).join('');
+    }
+    const content = [{ type: 'text', text: (text || 'Analyze these files') + fileContext }];
+    imageFiles.forEach(img => content.push({ type: 'image_url', image_url: { url: img.data } }));
+    msgs.push({ role: 'user', content: content });
+  } else if (textFiles.length > 0) {
+    const fileContext = textFiles.map(f => '\n\n--- File: ' + f.name + ' ---\n' + f.data).join('');
+    msgs.push({ role: 'user', content: (text || 'Analyze these files') + fileContext });
+  } else {
+    msgs.push({ role: 'user', content: text });
+  }
+
+  const endpoint = model === 'deepseek-reasoner' ? '/api/tordai/reasoning' : '/api/tordai/chat';
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: msgs, model })
+    });
+    removeTyping();
+    if (!res.ok) { appendMsg('assistant', currentLang === 'cn' ? '处理请求时出错，请重试。' : 'Error processing request. Please try again.'); isStreaming = false; document.getElementById('sendBtn').disabled = false; return; }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    const mb = document.getElementById('messagesBox');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message assistant';
+    msgDiv.innerHTML = '<div class="msg-avatar">' + aiAvatarHTML + '</div><div class="msg-body"><div class="msg-name" style="color:var(--gold)">TORD AI</div><div class="msg-content"></div></div>';
+    mb.appendChild(msgDiv);
+    const contentEl = msgDiv.querySelector('.msg-content');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
+      for (const line of lines) {
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) { fullText += parsed.error; contentEl.innerHTML = fmt(fullText); continue; }
+          const delta = parsed.choices?.[0]?.delta;
+          if (delta?.content) { fullText += delta.content; contentEl.innerHTML = fmt(fullText); mb.parentElement.scrollTop = mb.parentElement.scrollHeight; }
+          if (delta?.reasoning_content) { fullText += delta.reasoning_content; contentEl.innerHTML = '<div style="color:var(--purple);font-size:12px;font-style:italic;margin-bottom:6px">💭 Reasoning...</div>' + fmt(fullText); mb.parentElement.scrollTop = mb.parentElement.scrollHeight; }
+        } catch(e) {}
+      }
+    }
+
+    if (currentChatId) {
+      const c = chats.find(x => x.id === currentChatId);
+      if (c) { c.messages.push({ role: 'assistant', content: fullText }); saveChats(); }
+    }
+
+  } catch(err) {
+    removeTyping();
+    appendMsg('assistant', currentLang === 'cn' ? '连接错误，请重试。' : 'Connection error. Please try again.');
+  }
+  isStreaming = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+async function handleImage(prompt, images = [], size = '1024x1024', isPremium = false) {
+  isStreaming = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping();
+
+  try {
+    const body = { prompt, size: size || '1024x1024', premium: isPremium };
+    if (images.length > 0) body.images = images.map(img => img.data);
+    const res = await fetch('/api/tordai/image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    removeTyping();
+    const data = await res.json();
+    if (data.error) {
+      appendMsg('assistant', (currentLang === 'cn' ? '图像生成错误: ' : 'Image generation error: ') + data.error);
+    } else if (data.imageUrl) {
+      let modelNote = '';
+      if (data.model && !isPremium) {
+        modelNote = '<div style="font-size:10px;color:var(--text3);margin-top:6px;opacity:.7">' + (currentLang === 'cn' ? '免费模型: ' : 'Free model: ') + data.model + '</div>';
+      }
+      const imgHtml = '<img src="' + data.imageUrl + '" alt="Generated Image" style="max-width:100%;border-radius:10px" />' + modelNote;
+      appendMsg('assistant', imgHtml);
+    } else if (data.data && data.data[0]) {
+      const item = data.data[0];
+      const url = item.url || item.b64_json;
+      if (url) {
+        const imgHtml = '<img src="' + url + '" alt="Generated Image" style="max-width:100%;border-radius:10px" />';
+        appendMsg('assistant', imgHtml);
+      } else {
+        appendMsg('assistant', currentLang === 'cn' ? '图像已生成但无法显示。' : 'Image generated but could not be displayed.');
+      }
+    } else {
+      appendMsg('assistant', currentLang === 'cn' ? '未返回图像，请尝试其他提示。' : 'No image returned. Try a different prompt.');
+    }
+  } catch(err) {
+    removeTyping();
+    appendMsg('assistant', currentLang === 'cn' ? '图像生成失败，请重试。' : 'Image generation failed. Please try again.');
+  }
+  isStreaming = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function openImageLightbox(src) {
+  let existing = document.querySelector('.img-lightbox');
+  if (existing) existing.remove();
+  const lb = document.createElement('div');
+  lb.className = 'img-lightbox';
+  lb.onclick = (e) => { if (e.target === lb) lb.remove(); };
+  const dlLabel = currentLang === 'cn' ? '下载' : 'Download';
+  lb.innerHTML = '<div class="img-lightbox-inner" onclick="event.stopPropagation()">' +
+    '<button class="img-lightbox-close" onclick="this.closest(\'.img-lightbox\').remove()">&times;</button>' +
+    '<img src="' + src + '" alt="Preview" />' +
+    '<div class="img-lightbox-bar">' +
+    '<button class="img-lightbox-btn" onclick="downloadGenImage(this.closest(\'.img-lightbox\').querySelector(\'img\').src)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> ' + dlLabel + '</button>' +
+    '</div></div>';
+  document.body.appendChild(lb);
+}
+
+function downloadGenImage(src) {
+  const a = document.createElement('a');
+  if (src.startsWith('data:')) {
+    a.href = src;
+  } else {
+    a.href = src;
+  }
+  a.download = 'tordai-image-' + Date.now() + '.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.tagName === 'IMG' && e.target.alt === 'Generated Image') {
+    openImageLightbox(e.target.src);
+    return;
+  }
+  const dd = document.getElementById('modelDropdown');
+  const pill = document.querySelector('.model-pill');
+  if (!dd.contains(e.target) && !pill.contains(e.target)) closeDropdown();
+});
+
+(async function initChats() {
+  try {
+    const res = await fetch('/api/tordai/chats');
+    if (res.ok) {
+      chats = await res.json();
+      renderHistory();
+    }
+  } catch (e) { console.error('Failed to load chats:', e); }
+})();
+renderModels();
+</script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>TORD Airdrop | Tord Labs</title>
+  <meta property="og:title" content="TORD Airdrop | Tord Labs" />
+  <meta property="og:description" content="Complete tasks and earn $TORD tokens in our massive crypto airdrop campaign." />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #1a1a1a;
+      --border: #222222;
+      --border-hover: #333333;
+      --text-primary: #ffffff;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --accent-gold: #f5a623;
+      --accent-gold-dim: rgba(245, 166, 35, 0.15);
+      --accent-purple: #a855f7;
+      --accent-cyan: #22d3ee;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-blue: #3b82f6;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .navbar-brand img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .navbar-brand span {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+
+    .navbar-back {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .navbar-back:hover { color: var(--accent-gold); }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    .neon-border {
+      position: relative;
+      border-radius: 12px;
+      overflow: visible;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .neon-border:hover {
+      transform: translateY(-4px) scale(1.005);
+      box-shadow: 0 8px 32px rgba(245, 166, 35, 0.15);
+    }
+    .neon-border::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border-radius: 14px;
+      background: conic-gradient(from var(--snake-angle, 0deg), transparent 0%, transparent 60%, rgba(245,166,35,0.3) 70%, #f5a623 80%, #ffcc00 85%, #f5a623 90%, rgba(245,166,35,0.3) 95%, transparent 100%);
+      animation: snakeRotate 3s linear infinite;
+      z-index: -1;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      padding: 2px;
+      transition: opacity 0.3s ease;
+    }
+    .neon-border:hover::before {
+      opacity: 1;
+      background: conic-gradient(from var(--snake-angle, 0deg), transparent 0%, transparent 50%, rgba(245,166,35,0.5) 65%, #f5a623 75%, #ffcc00 82%, #f5a623 88%, rgba(245,166,35,0.5) 95%, transparent 100%);
+    }
+    .neon-border::after {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border-radius: 16px;
+      background: conic-gradient(from var(--snake-angle, 0deg), transparent 0%, transparent 60%, rgba(245,166,35,0.1) 70%, rgba(245,166,35,0.3) 80%, rgba(255,204,0,0.4) 85%, rgba(245,166,35,0.3) 90%, rgba(245,166,35,0.1) 95%, transparent 100%);
+      animation: snakeRotate 3s linear infinite;
+      filter: blur(8px);
+      z-index: -2;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      padding: 4px;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+    .neon-border:hover::after {
+      filter: blur(14px);
+      opacity: 0.9;
+      background: conic-gradient(from var(--snake-angle, 0deg), transparent 0%, transparent 50%, rgba(245,166,35,0.2) 65%, rgba(245,166,35,0.5) 75%, rgba(255,204,0,0.6) 82%, rgba(245,166,35,0.5) 88%, rgba(245,166,35,0.2) 95%, transparent 100%);
+    }
+    @property --snake-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes snakeRotate {
+      to { --snake-angle: 360deg; }
+    }
+
+    .stats-bar {
+      display: flex;
+      border: none;
+      border-radius: 12px;
+      overflow: visible;
+      margin-bottom: 24px;
+      background: linear-gradient(145deg, rgba(17,17,17,1), rgba(20,18,14,1));
+      box-shadow: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 18px 12px;
+      position: relative;
+    }
+
+    .stat-item:first-child {
+      border-right: 1px solid rgba(245, 166, 35, 0.15);
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(17,17,17,1), rgba(20,18,14,1));
+      border: none;
+      border-radius: 12px;
+      overflow: visible;
+      margin-bottom: 24px;
+      box-shadow: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(245, 166, 35, 0.15);
+    }
+
+    .card-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .banner-img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .card-body {
+      padding: 20px 24px;
+    }
+
+    .card-body p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .login-section {
+      text-align: center;
+      padding: 16px 24px 20px;
+      border-top: 1px solid rgba(245, 166, 35, 0.15);
+    }
+
+    .login-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .social-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      font-size: 16px;
+      color: white;
+    }
+
+    .social-btn:hover { transform: scale(1.1); opacity: 0.9; }
+
+    .social-btn.metamask { background: linear-gradient(135deg, #e2761b, #cd6116); }
+    .social-btn.twitter { background: #000000; border: 1px solid #333; }
+    .social-btn.discord { background: #5865F2; }
+    .social-btn.telegram { background: #229ED9; }
+
+    .ways-header {
+      text-align: center;
+      padding: 16px;
+      border-bottom: 1px solid rgba(245, 166, 35, 0.15);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .ways-header span {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .entry-list {
+      list-style: none;
+    }
+
+    .entry-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(245, 166, 35, 0.1);
+      cursor: pointer;
+      transition: background 0.2s;
+      gap: 14px;
+    }
+
+    .entry-item:last-child { border-bottom: none; }
+    .entry-item:hover { background: var(--bg-card-hover); }
+
+    .entry-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .entry-icon.wallet { background: var(--accent-gold-dim); color: var(--accent-gold); }
+    .entry-icon.x { background: rgba(255,255,255,0.08); color: #fff; }
+    .entry-icon.discord { background: rgba(88,101,242,0.15); color: #5865F2; }
+    .entry-icon.telegram { background: rgba(34,158,217,0.15); color: #229ED9; }
+    .entry-icon.share { background: rgba(239,68,96,0.15); color: #ef4460; }
+    .entry-icon.bonus { background: rgba(245,166,35,0.15); color: var(--accent-gold); }
+
+    .entry-text {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .entry-points {
+      background: rgba(245, 166, 35, 0.1);
+      color: var(--accent-gold);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .entry-lock {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-left: 6px;
+    }
+
+    .entry-expand {
+      display: none;
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(245, 166, 35, 0.1);
+    }
+
+    .entry-expand.active { display: block; }
+
+    .entry-expand input,
+    .entry-expand a.action-btn {
+      display: block;
+      width: 100%;
+    }
+
+    .entry-expand input {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .entry-expand input:focus { border-color: var(--accent-gold); }
+    .entry-expand input::placeholder { color: var(--text-muted); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent-gold), #e0941a);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .btn-outline:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+    .entry-completed {
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .entry-completed .entry-points {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--accent-green);
+    }
+
+    .check-icon {
+      color: var(--accent-green);
+      font-size: 16px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: var(--accent-gold); }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg-card);
+      border: 1px solid var(--accent-gold);
+      color: var(--text-primary);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .countdown-timer {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .countdown-unit {
+      text-align: center;
+    }
+
+    .countdown-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .countdown-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    .countdown-sep {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      color: var(--text-muted);
+      padding-top: 4px;
+    }
+
+    .progress-bar-container {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      height: 6px;
+      margin: 16px 24px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-gold), #e0941a);
+      border-radius: 8px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 0 24px 12px;
+    }
+
+    @media (max-width: 560px) {
+      .container { padding: 20px 12px 48px; }
+      .navbar { padding: 12px 16px; }
+      .stat-value, .countdown-value { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <img src="/logo.png" alt="Tord Labs" />
+      <span>TORD LABS</span>
+    </a>
+    <a href="/" class="navbar-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Back to Home
+    </a>
+  </nav>
+
+  <div class="container">
+    <div class="stats-bar neon-border">
+      <div class="stat-item">
+        <div class="stat-value" id="totalEntries">0</div>
+        <div class="stat-label">Your Reward</div>
+      </div>
+      <div class="stat-item">
+        <div class="countdown-timer" id="countdown">
+          <div class="countdown-unit">
+            <div class="countdown-value" id="cd-days">--</div>
+            <div class="countdown-label">Days</div>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit">
+            <div class="countdown-value" id="cd-hours">--</div>
+            <div class="countdown-label">Hrs</div>
+          </div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit">
+            <div class="countdown-value" id="cd-mins">--</div>
+            <div class="countdown-label">Min</div>
+          </div>
+        </div>
+        <div class="stat-label">Time Left</div>
+      </div>
+    </div>
+
+    <div class="card neon-border">
+      <div class="card-header">
+        <h2>$TORD Airdrop Campaign</h2>
+      </div>
+
+      <img src="/airdrop-banner.png" alt="TORD Airdrop" style="width:100%;border-radius:12px;margin-bottom:4px;" />
+
+      <div class="card-body">
+        <h3 style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;text-align:center;margin-bottom:12px;color:var(--accent-gold);">TordLabs Airdrop — 200 Winners<br><span style="color:var(--text-primary);font-size:14px;">Total Prize 10.000.000 $TORD</span></h3>
+        <p>Earn free $TORD tokens by completing simple tasks below. Follow our social channels, share with friends, and climb the leaderboard for bonus rewards.</p>
+      </div>
+
+      <div class="login-section" id="loginSection">
+        <div class="login-label">Connect to participate:</div>
+        <div class="social-buttons">
+          <button class="social-btn twitter" onclick="connectX()" title="Connect with X" style="width:auto;border-radius:8px;padding:10px 24px;gap:8px;display:inline-flex;align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span style="font-size:14px;font-weight:600;">Connect with X</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card neon-border" id="entriesCard">
+      <div class="ways-header">
+        <span>6</span> Ways to Enter
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 of 8 tasks completed</div>
+
+      <ul class="entry-list" id="entryList">
+        <li class="entry-item" data-task="wallet" onclick="toggleTask(this)">
+          <div class="entry-icon wallet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M22 10H2"/></svg>
+          </div>
+          <span class="entry-text">Enter Your BNB Wallet Address</span>
+        </li>
+        <li class="entry-expand" id="expand-wallet">
+          <input type="text" id="walletInput" placeholder="0x... your BNB/BSC wallet address" />
+          <button class="btn-primary" onclick="completeTask('wallet')">Submit Wallet</button>
+          <button class="btn-outline" onclick="toggleTask(document.querySelector('[data-task=wallet]'))">Cancel</button>
+        </li>
+
+        <li class="entry-item" data-task="follow" onclick="toggleTask(this)">
+          <div class="entry-icon x">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <span class="entry-text">Follow @torddefi on X</span>
+          <span class="entry-points">10K $TORD</span>
+        </li>
+        <li class="entry-expand" id="expand-follow">
+          <a href="https://twitter.com/intent/follow?screen_name=torddefi" target="_blank" class="btn-primary" onclick="setTimeout(()=>completeTask('follow'),2000)">Follow @torddefi</a>
+          <button class="btn-outline" onclick="toggleTask(document.querySelector('[data-task=follow]'))">Cancel</button>
+        </li>
+
+        <li class="entry-item" data-task="tweet" onclick="toggleTask(this)">
+          <div class="entry-icon x">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <span class="entry-text">Tweet About $TORD</span>
+          <span class="entry-points">10K $TORD</span>
+        </li>
+        <li class="entry-expand" id="expand-tweet">
+          <a href="https://twitter.com/intent/tweet?text=Just%20joined%20the%20%24TORD%20airdrop%20from%20%40torddefi%20%F0%9F%94%A5%20AI-powered%20DeFi%20yield%20aggregation%20%26%20crypto%20trading%20protocol.%20Get%20your%20free%20tokens%20now%21&hashtags=TORD,DeFi,Airdrop,Crypto" target="_blank" class="btn-primary" onclick="setTimeout(()=>completeTask('tweet'),2000)">Post on X</a>
+          <button class="btn-outline" onclick="toggleTask(document.querySelector('[data-task=tweet]'))">Cancel</button>
+        </li>
+
+        <li class="entry-item" data-task="telegram" onclick="toggleTask(this)">
+          <div class="entry-icon telegram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </div>
+          <span class="entry-text">Join @TordLabs on Telegram</span>
+          <span class="entry-points">10K $TORD</span>
+        </li>
+        <li class="entry-expand" id="expand-telegram">
+          <a href="https://t.me/tordlabs" target="_blank" class="btn-primary" onclick="setTimeout(()=>completeTask('telegram'),2000)">Join Telegram</a>
+          <button class="btn-outline" onclick="toggleTask(document.querySelector('[data-task=telegram]'))">Cancel</button>
+        </li>
+
+        <li class="entry-item" data-task="share" onclick="toggleTask(this)">
+          <div class="entry-icon wallet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <span class="entry-text">Visit Tord Website</span>
+          <span class="entry-points">10K $TORD</span>
+        </li>
+        <li class="entry-expand" id="expand-share">
+          <a href="https://tordlabs.com/" target="_blank" class="btn-primary" onclick="setTimeout(()=>completeTask('share'),2000)">Visit tordlabs.com</a>
+          <button class="btn-outline" onclick="toggleTask(document.querySelector('[data-task=share]'))">Cancel</button>
+        </li>
+
+        <li class="entry-item" data-task="bonus" onclick="toggleTask(this)">
+          <div class="entry-icon bonus">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <span class="entry-text">Complete Every Action For 10K Bonus $TORD</span>
+          <span class="entry-points">10K $TORD</span>
+          <span class="entry-lock" id="bonusLock">&#128274;</span>
+        </li>
+        <li class="entry-expand" id="expand-bonus">
+          <div id="bonusContent"></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <a href="#" onclick="document.getElementById('termsModal').style.display='flex';return false;">Terms & Conditions</a> &nbsp;|&nbsp; &copy; Tord Labs
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div id="termsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:300;align-items:center;justify-content:center;padding:24px;">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;padding:32px;">
+      <h3 style="font-family:'Orbitron',sans-serif;font-size:16px;margin-bottom:16px;">Terms & Conditions</h3>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">
+        <p style="margin-bottom:12px;">1. <strong>Eligibility:</strong> The $TORD Airdrop Campaign is open to all participants worldwide. You must complete the required tasks to earn entries.</p>
+        <p style="margin-bottom:12px;">2. <strong>No Purchase Necessary:</strong> No purchase is required to enter or receive tokens. Completing tasks does not guarantee token distribution.</p>
+        <p style="margin-bottom:12px;">3. <strong>Token Distribution:</strong> $TORD tokens will be distributed to eligible participants after the campaign ends. The amount received is proportional to entries earned.</p>
+        <p style="margin-bottom:12px;">4. <strong>Wallet Requirements:</strong> A valid BNB/BSC-compatible wallet address is required to receive tokens. Tord Labs is not responsible for tokens sent to incorrect addresses.</p>
+        <p style="margin-bottom:12px;">5. <strong>Fraud Prevention:</strong> Multiple entries using different identities or automated methods are prohibited. Fraudulent entries will be disqualified.</p>
+        <p style="margin-bottom:12px;">6. <strong>Changes:</strong> Tord Labs reserves the right to modify, suspend, or cancel the airdrop campaign at any time without prior notice.</p>
+        <p style="margin-bottom:12px;">7. <strong>Privacy:</strong> Wallet addresses and social account information collected are used solely for the purpose of this airdrop campaign.</p>
+        <p>8. <strong>Disclaimer:</strong> $TORD tokens are utility tokens. This airdrop does not constitute an investment offering. Participants should comply with their local regulations regarding cryptocurrency.</p>
+      </div>
+      <button class="btn-outline" style="margin-top:20px;" onclick="document.getElementById('termsModal').style.display='none'">Close</button>
+    </div>
+  </div>
+
+  <script>
+    let AIRDROP_END = new Date();
+    AIRDROP_END.setDate(AIRDROP_END.getDate() + 14);
+    let CAMPAIGN_ID = null;
+
+    const TASKS = {
+      wallet: { points: 0, completed: false, requiresWallet: true },
+      follow: { points: 10, completed: false },
+      tweet: { points: 10, completed: false },
+      telegram: { points: 10, completed: false },
+      share: { points: 10, completed: false },
+      bonus: { points: 10, completed: false, locked: true }
+    };
+
+    let connectedWallet = null;
+    let currentExpand = null;
+
+    let campaignActive = true;
+
+    async function loadCampaignFromAPI() {
+      try {
+        const res = await fetch('/api/campaign');
+        const data = await res.json();
+        if (data.campaign) {
+          CAMPAIGN_ID = data.campaign.id;
+          if (data.campaign.end_date) AIRDROP_END = new Date(data.campaign.end_date);
+
+          campaignActive = data.campaign.is_active;
+          if (data.campaign.end_date && new Date(data.campaign.end_date) < new Date()) {
+            campaignActive = false;
+          }
+
+          if (data.campaign.title) {
+            const titleEl = document.querySelector('.card-body h3');
+            if (titleEl) titleEl.innerHTML = data.campaign.title + '<br><span style="color:var(--text-primary);font-size:14px;">Total Prize ' + (data.campaign.total_prize || '10,000,000 $TORD') + '</span>';
+          }
+          if (data.campaign.description) {
+            const descEl = document.querySelector('.card-body p');
+            if (descEl) descEl.textContent = data.campaign.description;
+          }
+          if (data.campaign.banner_url) {
+            const bannerEl = document.querySelector('.banner-img');
+            if (bannerEl) bannerEl.src = data.campaign.banner_url;
+          }
+
+          if (!campaignActive) {
+            showCampaignEnded();
+          }
+        } else {
+          campaignActive = false;
+          showCampaignEnded();
+        }
+      } catch(e) { console.log('API not available, using defaults'); }
+    }
+
+    function showCampaignEnded() {
+      const loginSection = document.getElementById('loginSection');
+      if (loginSection) {
+        loginSection.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-family:Orbitron,sans-serif;font-size:18px;color:var(--accent-gold);margin-bottom:8px;">Campaign Ended</div><p style="color:var(--text-secondary);font-size:14px;">This campaign has ended. Stay tuned for the next one!</p></div>';
+      }
+      const entriesCard = document.getElementById('entriesCard');
+      if (entriesCard) {
+        entriesCard.style.opacity = '0.5';
+        entriesCard.style.pointerEvents = 'none';
+      }
+      document.getElementById('cd-days').textContent = '0';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('tord_airdrop');
+        if (saved) {
+          const data = JSON.parse(saved);
+          Object.keys(data.tasks || {}).forEach(k => {
+            if (TASKS[k]) {
+              TASKS[k].completed = data.tasks[k].completed;
+            }
+          });
+          connectedWallet = data.wallet || null;
+          connectedXUser = data.xUser || null;
+          if (data.campaignId) CAMPAIGN_ID = data.campaignId;
+        }
+      } catch(e) {}
+      updateUI();
+    }
+
+    function saveState() {
+      const data = { tasks: {}, wallet: connectedWallet, xUser: connectedXUser, endDate: AIRDROP_END.toISOString(), campaignId: CAMPAIGN_ID };
+      Object.keys(TASKS).forEach(k => { data.tasks[k] = { completed: TASKS[k].completed, points: TASKS[k].points }; });
+      localStorage.setItem('tord_airdrop', JSON.stringify(data));
+
+      if (connectedXUser && CAMPAIGN_ID) {
+        fetch('/api/participate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            campaign_id: CAMPAIGN_ID,
+            x_username: connectedXUser,
+            wallet_address: connectedWallet,
+            tasks_completed: data.tasks
+          })
+        }).catch(() => {});
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function updateUI() {
+      let total = 0;
+      let completedCount = 0;
+      const totalTasks = 6;
+
+      Object.keys(TASKS).forEach(k => {
+        if (TASKS[k].completed) {
+          total += TASKS[k].points;
+          completedCount++;
+        }
+      });
+
+      const rewardDisplay = total > 0 ? (total * 1000).toLocaleString() : '0';
+      document.getElementById('totalEntries').textContent = rewardDisplay;
+
+      const coreTasks = ['wallet','follow','tweet','telegram'];
+      const allCoreDone = coreTasks.every(k => TASKS[k].completed);
+
+      if (allCoreDone) {
+        TASKS.share.locked = false;
+        TASKS.bonus.locked = false;
+        document.getElementById('bonusLock').style.display = 'none';
+      }
+
+      document.querySelectorAll('.entry-item').forEach(item => {
+        const task = item.dataset.task;
+        if (TASKS[task] && TASKS[task].completed) {
+          item.classList.add('entry-completed');
+          const pts = item.querySelector('.entry-points');
+          if (pts) pts.innerHTML = '&#10003;';
+        }
+      });
+
+      const pct = (completedCount / totalTasks * 100).toFixed(0);
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressText').textContent = completedCount + ' of ' + totalTasks + ' tasks completed';
+
+      const loginSection = document.getElementById('loginSection');
+      if (connectedXUser && loginSection) {
+        loginSection.innerHTML = '<div class="login-label" style="color:var(--accent-green);">&#10003; Connected as <strong>@' + connectedXUser + '</strong></div>';
+      }
+    }
+
+    function toggleTask(el) {
+      const task = el.dataset.task;
+      if (!task) return;
+      if (!campaignActive) { showToast('This campaign has ended'); return; }
+      if (TASKS[task].completed) return;
+      if (!connectedXUser) {
+        showToast('Connect with X first to complete tasks');
+        return;
+      }
+      if (TASKS[task].locked) {
+        showToast('Complete all other tasks first to unlock this');
+        return;
+      }
+
+      const expandEl = document.getElementById('expand-' + task);
+      if (!expandEl) return;
+
+      if (currentExpand && currentExpand !== expandEl) {
+        currentExpand.classList.remove('active');
+      }
+
+      if (task === 'share') {
+        const shareUrl = window.location.href;
+        document.getElementById('shareContent').innerHTML =
+          '<input type="text" value="' + shareUrl + '" readonly onclick="this.select()" />' +
+          '<button class="btn-primary" onclick="navigator.clipboard.writeText(\'' + shareUrl + '\');completeTask(\'share\')">Copy & Share Link</button>' +
+          '<button class="btn-outline" onclick="toggleTask(document.querySelector(\'[data-task=share]\'))">Cancel</button>';
+      }
+
+      if (task === 'bonus') {
+        const coreTasks = ['wallet','follow','tweet','telegram','share'];
+        const allDone = coreTasks.every(k => TASKS[k].completed);
+        if (allDone) {
+          document.getElementById('bonusContent').innerHTML =
+            '<button class="btn-primary" onclick="completeTask(\'bonus\')">Claim 20 Bonus Entries</button>';
+        } else {
+          document.getElementById('bonusContent').innerHTML =
+            '<p style="color:var(--text-secondary);font-size:14px;text-align:center;margin:8px 0;">Complete all tasks above first.</p>';
+        }
+      }
+
+      expandEl.classList.toggle('active');
+      currentExpand = expandEl.classList.contains('active') ? expandEl : null;
+    }
+
+    function completeTask(task) {
+      if (!campaignActive) { showToast('This campaign has ended'); return; }
+      if (TASKS[task].completed) return;
+
+      if (task === 'wallet') {
+        const addr = document.getElementById('walletInput').value.trim();
+        if (!addr || !addr.startsWith('0x') || addr.length < 10) {
+          showToast('Please enter a valid wallet address');
+          return;
+        }
+        connectedWallet = addr;
+      }
+
+      TASKS[task].completed = true;
+      saveState();
+
+      const expandEl = document.getElementById('expand-' + task);
+      if (expandEl) expandEl.classList.remove('active');
+      currentExpand = null;
+
+      showToast('+' + (TASKS[task].points * 1000) + ' $TORD earned!');
+      updateUI();
+    }
+
+    let connectedXUser = null;
+
+    function connectX() {
+      if (!campaignActive) { showToast('This campaign has ended'); return; }
+      if (connectedXUser) {
+        showToast('Already connected as @' + connectedXUser);
+        return;
+      }
+
+      const width = 600, height = 700;
+      const left = (screen.width - width) / 2;
+      const top = (screen.height - height) / 2;
+      const authWindow = window.open(
+        'https://twitter.com/intent/follow?screen_name=torddefi',
+        'Connect with X',
+        'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',toolbar=no,menubar=no'
+      );
+
+      const promptName = () => {
+        const username = prompt('Enter your X (Twitter) username to verify connection:\n(e.g. @yourname)');
+        if (username && username.trim().length > 0) {
+          connectedXUser = username.trim().replace(/^@/, '');
+          saveState();
+          updateUI();
+          showToast('Connected as @' + connectedXUser);
+        }
+      };
+
+      if (authWindow) {
+        const checkClosed = setInterval(() => {
+          if (authWindow.closed) {
+            clearInterval(checkClosed);
+            promptName();
+          }
+        }, 500);
+      } else {
+        promptName();
+      }
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = AIRDROP_END - now;
+
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent = '0';
+        document.getElementById('cd-hours').textContent = '00';
+        document.getElementById('cd-mins').textContent = '00';
+        if (campaignActive) {
+          campaignActive = false;
+          showCampaignEnded();
+        }
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      document.getElementById('cd-days').textContent = days;
+      document.getElementById('cd-hours').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('cd-mins').textContent = mins.toString().padStart(2, '0');
+    }
+
+    loadCampaignFromAPI().then(() => {
+      loadState();
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    });
+  </script>
+</body>
+</html>

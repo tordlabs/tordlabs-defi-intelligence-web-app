@@ -1,0 +1,4 @@
+PassengerNodejs /home/shieqfjm/nodevenv/tordlabs.com/18/bin/node
+PassengerAppType node
+PassengerStartupFile app.cjs
+PassengerAppRoot /home/shieqfjm/tordlabs.com
